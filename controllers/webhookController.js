@@ -56,8 +56,38 @@ const handleWebhook = async (req, res) => {
         // 4. Parse JSON
         const data = JSON.parse(rawBody);
         
-        // In ra toàn bộ dữ liệu để "bắt bệnh"
-        console.log(`[Webhook] Payload giải mã thành công:`, JSON.stringify(data, null, 2));
+        // Đọc config.json để lấy tuỳ chọn showLog và các config khác (đọc sớm hơn)
+        const fs = require('fs');
+        const path = require('path');
+        
+        let showLog = false;
+        let ttsViTemplate = "{name} đã donate {amount} với lời nhắn {message}";
+        let ttsEnTemplate = "{name} sent you {amount} with message {message}";
+        let enableVieneu = false;
+        let vieneuVoice = "Phạm Tuyên";
+        let rainDensity = 1;
+        let rainTiers = { tier1_min: 0, tier2_min: 20000, tier3_min: 50000, tier4_min: 100000 };
+        
+        try {
+            const configPath = path.join(__dirname, '../public/alert/config.json');
+            const fileContent = fs.readFileSync(configPath, 'utf8');
+            const configData = JSON.parse(fileContent);
+            
+            if (configData.showLog !== undefined) showLog = configData.showLog;
+            if (configData.tts_vietnamese) ttsViTemplate = configData.tts_vietnamese;
+            if (configData.tts_english) ttsEnTemplate = configData.tts_english;
+            if (configData.enable_vieneu_tts !== undefined) enableVieneu = configData.enable_vieneu_tts;
+            if (configData.vieneu_voice) vieneuVoice = configData.vieneu_voice;
+            if (configData.rain_density !== undefined) rainDensity = configData.rain_density;
+            if (configData.rain_tiers) rainTiers = configData.rain_tiers;
+        } catch (e) {
+            console.error('[Webhook] Không thể đọc file config.json, dùng mặc định.');
+        }
+
+        // In ra toàn bộ dữ liệu để "bắt bệnh" nếu showLog được bật
+        if (showLog) {
+            console.log(`[Webhook] (DEBUG) Payload giải mã thành công:`, JSON.stringify(data, null, 2));
+        }
         
         // 5. Chống trùng lặp (Idempotency) bằng event_id
         const currentEventId = eventId || data.event_id;
@@ -83,45 +113,54 @@ const handleWebhook = async (req, res) => {
             let result = { message: 'Không có lời nhắn', senderName: 'Người xem ẩn danh' };
             if (!desc) return result;
             
-            let msg = desc;
+            // --- TÌM TÊN NGƯỜI GỬI ---
+            // Rule 4: Tên thường là 3 từ liên tiếp (trở lên) viết hoa toàn bộ và không chứa số.
+            const threeWordsMatch = desc.match(/\b([A-Z]+(?:\s+[A-Z]+){2,5})\b/);
+            const twoWordsMatch = desc.match(/\b([A-Z]+(?:\s+[A-Z]+){1})\b/);
             
-            // 1. Tách tên người gửi bằng cụm ".CT tu <STK> <TÊN> toi"
-            const senderMatch = msg.match(/\.?CT tu (?:[0-9]+ )?([^.]*?) toi /i);
-            if (senderMatch && senderMatch[1]) {
-                result.senderName = senderMatch[1].trim();
-            }
-
-            // 2. Tách lời nhắn (Xử lý định dạng cũ có chữ "ND")
-            // Cấu trúc: ... ND MBVCB.12345.MãGD.NộiDung.CT tu ...
-            const oldRegex = /ND [a-zA-Z0-9]+\.[0-9]+\.[a-zA-Z0-9]+\.(.*?)\.CT tu/i;
-            const match1 = msg.match(oldRegex);
-            if (match1 && match1[1]) {
-                result.message = match1[1].trim();
-                return result;
-            }
-
-            // 3. Tách lời nhắn (Xử lý định dạng mới tinh)
-            // Cấu trúc: MBVCB.12345.MãGD.NộiDung.CT tu ...
-            const newRegex = /[a-zA-Z0-9]+\.[0-9]+\.[a-zA-Z0-9]+\.(.*?)\.CT tu/i;
-            const match2 = msg.match(newRegex);
-            if (match2 && match2[1]) {
-                result.message = match2[1].trim();
-                return result;
-            }
-
-            // Xử lý chung cho các ngân hàng khác (xoá tiền tố, hậu tố)
-            msg = msg.replace(/^NHAN TU [a-zA-Z0-9]+ (TRACE|GD) [a-zA-Z0-9]+ ND /i, '');
-            msg = msg.replace(/\.?CT tu .*$/i, '');
-            msg = msg.replace(/\.?Chuyen tien tu .*$/i, '');
-            
-            if (msg.includes('.')) {
-                let parts = msg.split('.');
-                if (parts.length > 2) {
-                    msg = parts.slice(2).join('.');
+            if (threeWordsMatch) {
+                result.senderName = threeWordsMatch[1].trim();
+            } else if (twoWordsMatch) {
+                // Fallback nếu tên người gửi chỉ có 2 chữ (VD: LÊ PHÚ)
+                let name = twoWordsMatch[1].trim();
+                // Bỏ qua nếu bắt nhầm chữ CT (Chuyển tiền)
+                if (!name.startsWith('CT ')) {
+                    result.senderName = name;
                 }
             }
 
-            result.message = msg.trim() || 'Không có lời nhắn';
+            // --- LỌC TIN NHẮN ---
+            const parts = desc.split('.');
+            let validMsgParts = [];
+
+            for (let i = 0; i < parts.length; i++) {
+                const p = parts[i].trim();
+                if (!p) continue;
+
+                // Rule 1: Chắc chắn phần đầu không phải phần tin nhắn
+                if (i === 0) continue;
+
+                // Rule 3: Phần mà toàn là ký tự số cũng gần như sẽ không phải tin nhắn
+                if (/^\d+$/.test(p)) continue;
+
+                // Rule 2: Phần mà có một chuỗi ký tự (số hoặc chữ liền mạch không dấu cách) 
+                // dài quá 8 ký tự 99% không phải tin nhắn (là mã GD)
+                if (!p.includes(' ') && p.length > 8) continue;
+
+                // Loại trừ nốt phần chứa "CT tu" (nơi chứa tên người gửi) vì nó không phải tin nhắn
+                const pLower = p.toLowerCase();
+                if (pLower.includes('ct tu') || pLower.includes('chuyen tien tu') || pLower.includes('nhan tu')) {
+                    continue;
+                }
+
+                // Vượt qua tất cả rào cản trên thì 99% nó là tin nhắn!
+                validMsgParts.push(p);
+            }
+
+            if (validMsgParts.length > 0) {
+                result.message = validMsgParts.join('. ').trim();
+            }
+
             return result;
         };
 
@@ -135,28 +174,6 @@ const handleWebhook = async (req, res) => {
             description: extractedData.message,
             transaction_date: tx.happened_at || new Date().toISOString()
         };
-
-        // Đọc file config.json để lấy template lời đọc
-        const fs = require('fs');
-        const path = require('path');
-        let enableVieneu = false;
-        let vieneuVoice = "Phạm Tuyên";
-        let rainDensity = 1;
-        let rainTiers = { tier1_min: 0, tier2_min: 20000, tier3_min: 50000, tier4_min: 100000 };
-        
-        try {
-            const configPath = path.join(__dirname, '../public/alert/config.json');
-            const fileContent = fs.readFileSync(configPath, 'utf8');
-            const configData = JSON.parse(fileContent);
-            if (configData.tts_vietnamese) ttsViTemplate = configData.tts_vietnamese;
-            if (configData.tts_english) ttsEnTemplate = configData.tts_english;
-            if (configData.enable_vieneu_tts !== undefined) enableVieneu = configData.enable_vieneu_tts;
-            if (configData.vieneu_voice) vieneuVoice = configData.vieneu_voice;
-            if (configData.rain_density !== undefined) rainDensity = configData.rain_density;
-            if (configData.rain_tiers) rainTiers = configData.rain_tiers;
-        } catch (e) {
-            console.error('[Webhook] Không thể đọc file config.json, dùng mặc định.');
-        }
 
         const nameStr = donationInfo.account_no;
         // Gửi số nguyên gốc (không phẩy/chấm) để AI tự động hiểu và đọc đúng hàng trăm, ngàn, triệu
