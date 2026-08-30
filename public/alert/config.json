@@ -1,5 +1,7 @@
 {
   "enable_zalo_ai": false,
+  "enable_vieneu_tts": true,
+  "vieneu_voice": "Kim Thanh",
   "tts_vietnamese": "{name} đã ném vào mặt bạn {amount} đồng với lời nhắn {message}",
   "tts_english": "{name} sent you {amount} with message {message}",
   "rain_density": 2,

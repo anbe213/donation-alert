@@ -117,14 +117,14 @@ function playNextAlert() {
 
     // Phát giọng đọc độc lập sau đúng 3 giây
     setTimeout(() => {
-        if (data.tts_url) {
-            // Nếu có link Zalo AI thì ưu tiên phát
-            const zaloAudio = new Audio(data.tts_url);
-            zaloAudio.play().catch(e => {
-                alertMessage.innerText = "[LỖI ÂM THANH ZALO]: " + e.message;
+        if (data.local_tts_url) {
+            // Ưu tiên 1: Phát giọng VieNeu-TTS (Offline)
+            const localAudio = new Audio(data.local_tts_url);
+            localAudio.play().catch(e => {
+                alertMessage.innerText = "[LỖI ÂM THANH OFFLINE]: " + e.message;
             });
         } else if (data.fallback_text && 'speechSynthesis' in window) {
-            // Backup: Phát giọng lơ lớ mặc định nếu không có Zalo AI
+            // Backup: Phát giọng lơ lớ mặc định nếu VieNeu bị lỗi hoặc tắt
             try {
                 // Đọc toàn bộ câu Tiếng Anh đã được ghép sẵn ở Server
                 const utterance = new SpeechSynthesisUtterance(data.fallback_text);

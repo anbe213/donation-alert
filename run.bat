@@ -32,7 +32,13 @@ IF NOT EXIST ".env" (
 )
 
 :: Chay server
-echo Dang khoi dong Server...
-node server.js
+echo Dang khoi dong Server Alert...
+echo Kiem tra thu vien Python (VieNeu-TTS)...
+python -c "import vieneu" 2>nul
+if %ERRORLEVEL% neq 0 (
+    echo Dang cai dat thu vien VieNeu-TTS lan dau...
+    pip install vieneu
+)
+npm start
 
 pause

@@ -139,9 +139,8 @@ const handleWebhook = async (req, res) => {
         // Đọc file config.json để lấy template lời đọc
         const fs = require('fs');
         const path = require('path');
-        let ttsViTemplate = "{name} đã donate {amount} với lời nhắn {message}";
-        let ttsEnTemplate = "{name} sent you {amount} with message {message}";
-        let enableZalo = false;
+        let enableVieneu = false;
+        let vieneuVoice = "Phạm Tuyên";
         let rainDensity = 1;
         let rainTiers = { tier1_min: 0, tier2_min: 20000, tier3_min: 50000, tier4_min: 100000 };
         
@@ -151,7 +150,8 @@ const handleWebhook = async (req, res) => {
             const configData = JSON.parse(fileContent);
             if (configData.tts_vietnamese) ttsViTemplate = configData.tts_vietnamese;
             if (configData.tts_english) ttsEnTemplate = configData.tts_english;
-            if (configData.enable_zalo_ai !== undefined) enableZalo = configData.enable_zalo_ai;
+            if (configData.enable_vieneu_tts !== undefined) enableVieneu = configData.enable_vieneu_tts;
+            if (configData.vieneu_voice) vieneuVoice = configData.vieneu_voice;
             if (configData.rain_density !== undefined) rainDensity = configData.rain_density;
             if (configData.rain_tiers) rainTiers = configData.rain_tiers;
         } catch (e) {
@@ -159,9 +159,12 @@ const handleWebhook = async (req, res) => {
         }
 
         const nameStr = donationInfo.account_no;
-        const amountStrVi = donationInfo.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        const amountStrEn = donationInfo.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        const msgStr = donationInfo.description;
+        // Gửi số nguyên gốc (không phẩy/chấm) để AI tự động hiểu và đọc đúng hàng trăm, ngàn, triệu
+        const amountStrVi = donationInfo.amount.toString();
+        const amountStrEn = donationInfo.amount.toString();
+        
+        // Loại bỏ các thẻ trong ngoặc vuông (như [cười khẩy], [thở dài]) để bot không tự diễn
+        const msgStr = (donationInfo.description || "").replace(/\[.*?\]/g, '').trim();
 
         const fullTextVi = ttsViTemplate
             .replace('{name}', nameStr)
@@ -175,6 +178,24 @@ const handleWebhook = async (req, res) => {
         
         donationInfo.fallback_text = fullTextEn; // Lưu để truyền xuống Frontend đọc Tiếng Anh nếu cần
         
+        // --- Dọn dẹp các file âm thanh cũ (rác) ---
+        const assetsDir = path.join(__dirname, '../public/alert/assets');
+        try {
+            fs.readdirSync(assetsDir).forEach(file => {
+                if (file.startsWith('tts_') && file.endsWith('.wav')) {
+                    const filePath = path.join(assetsDir, file);
+                    const stats = fs.statSync(filePath);
+                    const now = Date.now();
+                    // Nếu file đã tồn tại quá 3 phút (thừa thời gian để phát trên OBS) thì xoá luôn
+                    if (now - stats.mtimeMs > 3 * 60 * 1000) {
+                        fs.unlinkSync(filePath);
+                    }
+                }
+            });
+        } catch (e) {
+            console.error('[Cleanup] Lỗi dọn dẹp file cũ:', e.message);
+        }
+        
         // Tính toán item rơi dựa vào số tiền
         let rainItem = 1;
         if (donationInfo.amount >= rainTiers.tier4_min) rainItem = 4;
@@ -183,39 +204,28 @@ const handleWebhook = async (req, res) => {
         donationInfo.rain_item = rainItem;
         donationInfo.rain_density = rainDensity;
 
-        // --- Tích hợp Zalo AI Text-To-Speech ---
-        if (enableZalo && donationInfo.amount > 0 && process.env.ZALO_AI_API_KEY && donationInfo.description && donationInfo.description !== 'Không có lời nhắn') {
+        // --- Tích hợp AI Text-To-Speech (VieNeu-TTS) ---
+        if (enableVieneu && donationInfo.amount > 0 && donationInfo.description && donationInfo.description !== 'Không có lời nhắn') {
             try {
-                const axios = require('axios');
-                const qs = require('qs');
-
-                const zaloData = qs.stringify({
-                    'input': fullTextVi, // Gửi nguyên câu hoàn chỉnh cho Zalo đọc
-                    'speaker_id': '1', // 1: Nữ miền Nam (Lan Nhi)
-                    'speed': '1.0',
-                    'encode_type': '1' // MP3
+                const { execSync } = require('child_process');
+                const fileName = `tts_${Date.now()}.wav`;
+                // Lưu vào public/alert/assets để frontend có thể truy cập qua URL
+                const outputFilePath = path.join(__dirname, '../public/alert/assets', fileName);
+                
+                console.log(`[VieNeu-TTS] Đang gọi Python sinh giọng đọc offline...`);
+                // Gọi script python (chặn Node.js trong 1-2s cho đến khi xong)
+                execSync(`python tts_worker.py --text "${fullTextVi}" --output "${outputFilePath}" --voice "${vieneuVoice}"`, {
+                    cwd: path.join(__dirname, '..'), // Chạy ở thư mục gốc project
+                    encoding: 'utf8',
+                    stdio: 'pipe'
                 });
-
-                const config = {
-                    method: 'post',
-                    maxBodyLength: Infinity,
-                    url: 'https://api.zalo.ai/v1/tts/synthesize',
-                    headers: { 
-                        'apikey': process.env.ZALO_AI_API_KEY, 
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    data : zaloData
-                };
-
-                const response = await axios.request(config);
-                if (response.data && response.data.error_code === 0 && response.data.data && response.data.data.url) {
-                    donationInfo.tts_url = response.data.data.url;
-                    console.log(`[Zalo AI] Đã tạo thành công giọng đọc: ${donationInfo.tts_url}`);
-                } else {
-                    console.error('[Zalo AI] Lỗi tạo giọng đọc:', response.data.error_message);
-                }
+                
+                console.log(`[VieNeu-TTS] Tạo thành công! File: ${fileName}`);
+                donationInfo.local_tts_url = `assets/${fileName}`;
             } catch (err) {
-                console.error('[Zalo AI] Không thể kết nối tới Zalo AI:', err.message);
+                console.error('[VieNeu-TTS] Lỗi sinh giọng đọc Python:', err.message);
+                if (err.stdout) console.error('Python STDOUT:', err.stdout);
+                if (err.stderr) console.error('Python STDERR:', err.stderr);
             }
         }
 
