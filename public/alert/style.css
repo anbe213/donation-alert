@@ -14,17 +14,18 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start; /* Đẩy lên trên thay vì center */
-    padding-top: 3vh; /* Đẩy lên sát mép trên hơn */
+    padding-top: 2vh; /* Đẩy sát mép trên cùng */
     text-align: center;
     opacity: 0;
     transform: scale(0.5);
+    transform-origin: top center; /* Neo dính vào đỉnh màn hình khi thu nhỏ */
     transition: all 0.5s ease-out;
 }
 
 /* Class kích hoạt khi có thông báo (Fade in và phóng to) */
 #alert-container.show {
     opacity: 1;
-    transform: scale(0.9); /* Thu nhỏ 10% so với kích thước gốc */
+    transform: scale(0.5); /* Thu nhỏ còn 50% */
 }
 
 #alert-container.hidden {
