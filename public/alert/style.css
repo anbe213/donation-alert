@@ -1,0 +1,72 @@
+/* Xoá viền, đặt nền trong suốt cho OBS */
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: transparent; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#alert-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.5s ease-out;
+}
+
+/* Class kích hoạt khi có thông báo (Fade in và phóng to) */
+#alert-container.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+#alert-container.hidden {
+    display: none;
+}
+
+/* Ảnh GIF Animation */
+#alert-image {
+    max-width: 300px;
+    max-height: 300px;
+    margin-bottom: 20px;
+}
+
+/* Hộp chứa Text */
+#alert-text-box {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 20px 40px;
+    border-radius: 15px;
+    border: 3px solid #ffcc00;
+    box-shadow: 0 0 20px #ffcc00;
+    color: white;
+    max-width: 80%;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Tên người gửi */
+#alert-name {
+    font-size: 32px;
+    font-weight: bold;
+    color: #00ffcc;
+}
+
+/* Số tiền */
+#alert-amount {
+    font-size: 48px;
+    font-weight: 900;
+    color: #ffcc00;
+    margin: 10px 0;
+}
+
+/* Lời nhắn */
+#alert-message {
+    font-size: 24px;
+    font-style: italic;
+    color: #ffffff;
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Alert</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Khung hiển thị thông báo, mặc định ẩn -->
+    <div id="alert-container" class="hidden">
+        <!-- Chứa ảnh GIF animation -->
+        <img id="alert-image" src="assets/default.gif" alt="Alert GIF" />
+        
+        <!-- Chứa Text -->
+        <div id="alert-text-box">
+            <div id="alert-name">Ai đó vừa donate!</div>
+            <div id="alert-amount">50,000đ</div>
+            <div id="alert-message">"Cảm ơn bạn rất nhiều nhé!"</div>
+        </div>
+        
+        <!-- Chứa âm thanh (ẩn) -->
+        <audio id="alert-sound" src="assets/default.mp3" preload="auto"></audio>
+    </div>
+
+    <!-- Script kết nối Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
