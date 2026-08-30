@@ -13,7 +13,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start; /* Đẩy lên trên thay vì center */
+    padding-top: 3vh; /* Đẩy lên sát mép trên hơn */
     text-align: center;
     opacity: 0;
     transform: scale(0.5);
@@ -23,7 +24,7 @@ body {
 /* Class kích hoạt khi có thông báo (Fade in và phóng to) */
 #alert-container.show {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(0.9); /* Thu nhỏ 10% so với kích thước gốc */
 }
 
 #alert-container.hidden {
@@ -37,36 +38,79 @@ body {
     margin-bottom: 20px;
 }
 
-/* Hộp chứa Text */
+/* Hộp chứa Text - Phong cách Medieval Fantasy */
 #alert-text-box {
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 20px 40px;
-    border-radius: 15px;
-    border: 3px solid #ffcc00;
-    box-shadow: 0 0 20px #ffcc00;
-    color: white;
-    max-width: 80%;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    background: linear-gradient(to bottom, #2b2118, #150f0a);
+    padding: 25px 50px; /* Thu nhỏ padding một chút */
+    border-radius: 5px;
+    border: 4px solid #8e6c3a; /* Antique bronze/gold */
+    box-shadow: 0 15px 35px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.9);
+    position: relative;
+    color: #e4d5b7;
+    max-width: 70%;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+/* Viền đôi bên trong (Hoạ tiết giả cổ) */
+#alert-text-box::before {
+    content: "";
+    position: absolute;
+    top: 6px; left: 6px; right: 6px; bottom: 6px;
+    border: 1px solid #8e6c3a;
+    pointer-events: none;
 }
 
 /* Tên người gửi */
 #alert-name {
-    font-size: 32px;
+    font-size: 34px;
     font-weight: bold;
-    color: #00ffcc;
+    color: #d4af37; /* Cực phẩm Gold */
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 2px 2px 4px #000;
+    margin-bottom: 5px;
 }
 
 /* Số tiền */
 #alert-amount {
-    font-size: 48px;
-    font-weight: 900;
-    color: #ffcc00;
+    font-size: 56px;
+    font-weight: bold;
+    color: #ff4500; /* Đỏ cam rực lửa ma thuật / màu hồng ngọc */
     margin: 10px 0;
+    text-shadow: 0px 0px 15px rgba(255, 69, 0, 0.6), 2px 2px 5px #000;
 }
 
 /* Lời nhắn */
 #alert-message {
-    font-size: 24px;
+    font-size: 26px;
     font-style: italic;
-    color: #ffffff;
+    color: #c7bca1;
+    text-shadow: 1px 1px 3px #000;
+    line-height: 1.4;
+    padding-top: 10px;
+}
+
+/* Con mua item */
+#rain-container { 
+    position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; overflow: hidden; z-index: 9999; 
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+#rain-container.show {
+    opacity: 1;
+}
+
+.rain-item { 
+    position: absolute; 
+    top: -100px; 
+    width: 50px; 
+    height: 50px; 
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fall { 
+    0% { transform: translateY(-100px) rotate(0deg); }
+    100% { transform: translateY(110vh) rotate(360deg); }
 }

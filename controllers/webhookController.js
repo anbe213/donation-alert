@@ -141,6 +141,9 @@ const handleWebhook = async (req, res) => {
         const path = require('path');
         let ttsViTemplate = "{name} đã donate {amount} với lời nhắn {message}";
         let ttsEnTemplate = "{name} sent you {amount} with message {message}";
+        let enableZalo = false;
+        let rainDensity = 1;
+        let rainTiers = { tier1_min: 0, tier2_min: 20000, tier3_min: 50000, tier4_min: 100000 };
         
         try {
             const configPath = path.join(__dirname, '../public/alert/config.json');
@@ -148,6 +151,9 @@ const handleWebhook = async (req, res) => {
             const configData = JSON.parse(fileContent);
             if (configData.tts_vietnamese) ttsViTemplate = configData.tts_vietnamese;
             if (configData.tts_english) ttsEnTemplate = configData.tts_english;
+            if (configData.enable_zalo_ai !== undefined) enableZalo = configData.enable_zalo_ai;
+            if (configData.rain_density !== undefined) rainDensity = configData.rain_density;
+            if (configData.rain_tiers) rainTiers = configData.rain_tiers;
         } catch (e) {
             console.error('[Webhook] Không thể đọc file config.json, dùng mặc định.');
         }
@@ -168,9 +174,17 @@ const handleWebhook = async (req, res) => {
             .replace('{message}', msgStr);
         
         donationInfo.fallback_text = fullTextEn; // Lưu để truyền xuống Frontend đọc Tiếng Anh nếu cần
+        
+        // Tính toán item rơi dựa vào số tiền
+        let rainItem = 1;
+        if (donationInfo.amount >= rainTiers.tier4_min) rainItem = 4;
+        else if (donationInfo.amount >= rainTiers.tier3_min) rainItem = 3;
+        else if (donationInfo.amount >= rainTiers.tier2_min) rainItem = 2;
+        donationInfo.rain_item = rainItem;
+        donationInfo.rain_density = rainDensity;
 
         // --- Tích hợp Zalo AI Text-To-Speech ---
-        if (donationInfo.amount > 0 && process.env.ZALO_AI_API_KEY && donationInfo.description && donationInfo.description !== 'Không có lời nhắn') {
+        if (enableZalo && donationInfo.amount > 0 && process.env.ZALO_AI_API_KEY && donationInfo.description && donationInfo.description !== 'Không có lời nhắn') {
             try {
                 const axios = require('axios');
                 const qs = require('qs');

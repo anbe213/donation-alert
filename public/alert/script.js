@@ -69,12 +69,41 @@ function playNextAlert() {
     // Có thể đổi ảnh ngẫu nhiên nếu muốn
     // alertImage.src = "assets/hinh_moi.gif"; 
 
+    // Lấy vùng chứa mưa item
+    const rainContainer = document.getElementById('rain-container');
+    rainContainer.innerHTML = ''; // Xoá cơn mưa cũ nếu có
+
     // Bật hiệu ứng CSS
     alertContainer.classList.remove('hidden');
     
     // Đợi 1 chút xíu để DOM render trước khi thêm class show (để animation mượt hơn)
     setTimeout(() => {
         alertContainer.classList.add('show');
+        rainContainer.classList.add('show'); // Hiện cơn mưa cùng lúc
+        
+        // --- Bắt đầu tạo cơn mưa item ---
+        const rainItemTier = data.rain_item || 1;
+        const rainDensity = data.rain_density || 1;
+        const totalItems = 75 * rainDensity; // Tăng thêm lượng item để bù cho thời gian rơi dài ra
+        
+        for (let i = 0; i < totalItems; i++) {
+            const img = document.createElement('img');
+            img.src = `assets/item${rainItemTier}.png`;
+            img.className = 'rain-item';
+            
+            // Random vị trí X trên toàn màn hình (0% -> 95%)
+            const randomX = Math.floor(Math.random() * 95);
+            // Spawn rải rác từ 0s -> 10s để đảm bảo lúc tắt (giây thứ 10) mưa vẫn đang xối xả
+            const randomDelay = (Math.random() * 10).toFixed(2);
+            // Random tốc độ rơi (3s -> 5s)
+            const randomDuration = (3 + Math.random() * 2).toFixed(2);
+            
+            img.style.left = `${randomX}vw`;
+            img.style.animationDelay = `${randomDelay}s`;
+            img.style.animationDuration = `${randomDuration}s`;
+            
+            rainContainer.appendChild(img);
+        }
     }, 50);
 
     // Phát âm thanh mặc định ngay lập tức
@@ -111,10 +140,12 @@ function playNextAlert() {
     // Giữ thông báo trên màn hình trong 10 giây (tăng thêm 2s để chờ đọc xong), sau đó ẩn đi
     setTimeout(() => {
         alertContainer.classList.remove('show');
+        rainContainer.classList.remove('show'); // Làm mờ toàn bộ cơn mưa cùng lúc
         
-        // Đợi CSS transition ẩn đi xong (0.5s) rồi mới chạy cái tiếp theo
+        // Đợi CSS transition ẩn đi xong (0.5s) rồi mới dọn dẹp DOM
         setTimeout(() => {
             alertContainer.classList.add('hidden');
+            rainContainer.innerHTML = ''; // Xoá sạch các item để nhẹ trình duyệt
             playNextAlert();
         }, 500);
 

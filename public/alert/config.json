@@ -1,4 +1,12 @@
 {
+  "enable_zalo_ai": false,
   "tts_vietnamese": "{name} đã ném vào mặt bạn {amount} đồng với lời nhắn {message}",
-  "tts_english": "{name} sent you {amount} with message {message}"
+  "tts_english": "{name} sent you {amount} with message {message}",
+  "rain_density": 2,
+  "rain_tiers": {
+    "tier1_min": 0,
+    "tier2_min": 20000,
+    "tier3_min": 50000,
+    "tier4_min": 100000
+  }
 }
