@@ -136,6 +136,75 @@ const handleWebhook = async (req, res) => {
             transaction_date: tx.happened_at || new Date().toISOString()
         };
 
+        // Đọc file config.json để lấy template lời đọc
+        const fs = require('fs');
+        const path = require('path');
+        let ttsViTemplate = "{name} đã donate {amount} với lời nhắn {message}";
+        let ttsEnTemplate = "{name} sent you {amount} with message {message}";
+        
+        try {
+            const configPath = path.join(__dirname, '../public/alert/config.json');
+            const fileContent = fs.readFileSync(configPath, 'utf8');
+            const configData = JSON.parse(fileContent);
+            if (configData.tts_vietnamese) ttsViTemplate = configData.tts_vietnamese;
+            if (configData.tts_english) ttsEnTemplate = configData.tts_english;
+        } catch (e) {
+            console.error('[Webhook] Không thể đọc file config.json, dùng mặc định.');
+        }
+
+        const nameStr = donationInfo.account_no;
+        const amountStrVi = donationInfo.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        const amountStrEn = donationInfo.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        const msgStr = donationInfo.description;
+
+        const fullTextVi = ttsViTemplate
+            .replace('{name}', nameStr)
+            .replace('{amount}', amountStrVi)
+            .replace('{message}', msgStr);
+
+        const fullTextEn = ttsEnTemplate
+            .replace('{name}', nameStr)
+            .replace('{amount}', amountStrEn)
+            .replace('{message}', msgStr);
+        
+        donationInfo.fallback_text = fullTextEn; // Lưu để truyền xuống Frontend đọc Tiếng Anh nếu cần
+
+        // --- Tích hợp Zalo AI Text-To-Speech ---
+        if (donationInfo.amount > 0 && process.env.ZALO_AI_API_KEY && donationInfo.description && donationInfo.description !== 'Không có lời nhắn') {
+            try {
+                const axios = require('axios');
+                const qs = require('qs');
+
+                const zaloData = qs.stringify({
+                    'input': fullTextVi, // Gửi nguyên câu hoàn chỉnh cho Zalo đọc
+                    'speaker_id': '1', // 1: Nữ miền Nam (Lan Nhi)
+                    'speed': '1.0',
+                    'encode_type': '1' // MP3
+                });
+
+                const config = {
+                    method: 'post',
+                    maxBodyLength: Infinity,
+                    url: 'https://api.zalo.ai/v1/tts/synthesize',
+                    headers: { 
+                        'apikey': process.env.ZALO_AI_API_KEY, 
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    data : zaloData
+                };
+
+                const response = await axios.request(config);
+                if (response.data && response.data.error_code === 0 && response.data.data && response.data.data.url) {
+                    donationInfo.tts_url = response.data.data.url;
+                    console.log(`[Zalo AI] Đã tạo thành công giọng đọc: ${donationInfo.tts_url}`);
+                } else {
+                    console.error('[Zalo AI] Lỗi tạo giọng đọc:', response.data.error_message);
+                }
+            } catch (err) {
+                console.error('[Zalo AI] Không thể kết nối tới Zalo AI:', err.message);
+            }
+        }
+
         console.log(`[Webhook] Phân tích số tiền: ${donationInfo.amount}đ, Tin nhắn: "${donationInfo.description}"`);
 
         if (donationInfo.amount > 0) {

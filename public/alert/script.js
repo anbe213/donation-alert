@@ -86,11 +86,19 @@ function playNextAlert() {
         }
     });
 
-    // Phát giọng đọc (Tiếng Anh lơ lớ) độc lập sau đúng 3 giây
+    // Phát giọng đọc độc lập sau đúng 3 giây
     setTimeout(() => {
-        if (data.description && 'speechSynthesis' in window) {
+        if (data.tts_url) {
+            // Nếu có link Zalo AI thì ưu tiên phát
+            const zaloAudio = new Audio(data.tts_url);
+            zaloAudio.play().catch(e => {
+                alertMessage.innerText = "[LỖI ÂM THANH ZALO]: " + e.message;
+            });
+        } else if (data.fallback_text && 'speechSynthesis' in window) {
+            // Backup: Phát giọng lơ lớ mặc định nếu không có Zalo AI
             try {
-                const utterance = new SpeechSynthesisUtterance(data.description);
+                // Đọc toàn bộ câu Tiếng Anh đã được ghép sẵn ở Server
+                const utterance = new SpeechSynthesisUtterance(data.fallback_text);
                 utterance.lang = 'en-US'; // Ép đọc giọng Tiếng Anh
                 utterance.rate = 1.0;
                 window.speechSynthesis.speak(utterance);

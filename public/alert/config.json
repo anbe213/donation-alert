@@ -1,0 +1,4 @@
+{
+  "tts_vietnamese": "{name} đã ném vào mặt bạn {amount} đồng với lời nhắn {message}",
+  "tts_english": "{name} sent you {amount} with message {message}"
+}
