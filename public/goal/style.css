@@ -125,7 +125,10 @@ body {
    ========================================= */
 #theme-bar {
     font-family: 'Roboto', 'Arial', sans-serif;
-    padding-top: 60px; /* Chừa khoảng trống phía trên cho nhân vật */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
 }
 
 #goal-bar-container {
