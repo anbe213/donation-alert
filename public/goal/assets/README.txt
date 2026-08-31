@@ -1,4 +1,4 @@
-Hãy đặt 10 file ảnh WEBP của nhân vật vào thư mục này để thanh Goal Bar có thể nhận diện và hiển thị.
+Hãy đặt 10 file ảnh (định dạng .WEBP hoặc .GIF đều được) của nhân vật vào thư mục này để thanh Goal Bar nhận diện.
 Tên file phải được đặt chính xác như sau:
 enemy1.webp (Dành cho mốc 0 - 9.99%)
 enemy2.webp (Dành cho mốc 10 - 19.99%)

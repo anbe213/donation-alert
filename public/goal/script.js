@@ -41,10 +41,19 @@ const updateBarUI = (current, target, percentage, title) => {
         if (charIndex > 10) charIndex = 10;
         if (charIndex < 1) charIndex = 1;
         
-        const newSrc = `assets/enemy${charIndex}.webp`;
-        // Tránh gán lại src liên tục gây giật lag ảnh
-        if (!charImg.src.endsWith(newSrc)) {
-            charImg.src = newSrc;
+        const webpSrc = `assets/enemy${charIndex}.webp`;
+        const gifSrc = `assets/enemy${charIndex}.gif`;
+        
+        // Nếu ảnh hiện tại không phải là ảnh đúng mốc (webp hoặc gif), tiến hành đổi ảnh
+        if (!charImg.src.endsWith(webpSrc) && !charImg.src.endsWith(gifSrc)) {
+            charImg.src = webpSrc; // Mặc định thử load webp trước
+            
+            // Nếu không tìm thấy file webp, trình duyệt sẽ nhảy vào sự kiện onerror
+            charImg.onerror = () => {
+                if (charImg.src.endsWith('.webp')) {
+                    charImg.src = gifSrc; // Đổi sang thử load file gif
+                }
+            };
         }
         
         charImg.style.display = 'block';
