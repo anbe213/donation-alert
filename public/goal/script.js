@@ -41,7 +41,7 @@ const updateBarUI = (current, target, percentage, title) => {
         if (charIndex > 10) charIndex = 10;
         if (charIndex < 1) charIndex = 1;
         
-        const newSrc = `assets/enemy${charIndex}.gif`;
+        const newSrc = `assets/enemy${charIndex}.webp`;
         // Tránh gán lại src liên tục gây giật lag ảnh
         if (!charImg.src.endsWith(newSrc)) {
             charImg.src = newSrc;
