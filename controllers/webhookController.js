@@ -86,7 +86,17 @@ const handleWebhook = async (req, res) => {
 
         // In ra toàn bộ dữ liệu để "bắt bệnh" nếu showLog được bật
         if (showLog) {
-            console.log(`[Webhook] (DEBUG) Payload giải mã thành công:`, JSON.stringify(data, null, 2));
+            const logStr = JSON.stringify(data, null, 2);
+            console.log(`[Webhook] (DEBUG) Payload giải mã thành công:\n`, logStr);
+            
+            // Lưu ra file log để nghiên cứu
+            try {
+                const logFilePath = path.join(__dirname, '../payloads.log');
+                const logEntry = `\n\n--- [${new Date().toISOString()}] ---\n${logStr}`;
+                fs.appendFileSync(logFilePath, logEntry, 'utf8');
+            } catch (err) {
+                console.error('[Webhook] Không thể ghi file log payloads.log:', err.message);
+            }
         }
         
         // 5. Chống trùng lặp (Idempotency) bằng event_id
