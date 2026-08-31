@@ -38,11 +38,11 @@ const updateBarUI = (current, target, percentage, title, enemySize) => {
         const baseHeight = 60;
         charImg.style.height = `${baseHeight * enemySize}px`;
 
-        // Tính toán index (1 đến 10)
-        // VD: 0 - 9.99% -> enemy1.gif
-        // ... 90 - 100% -> enemy10.gif
-        let charIndex = Math.floor(percentage / 10) + 1;
-        if (charIndex > 10) charIndex = 10;
+        // Tính toán index (1 đến 8)
+        // VD: 0 - 12.49% -> enemy1.webp
+        // ... 87.5 - 100% -> enemy8.webp
+        let charIndex = Math.floor(percentage / 12.5) + 1;
+        if (charIndex > 8) charIndex = 8;
         if (charIndex < 1) charIndex = 1;
         
         const webpSrc = `assets/enemy${charIndex}.webp`;

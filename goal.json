@@ -1,7 +1,7 @@
 {
   "title": "Stream 2/9",
-  "target": 2000000,
-  "current": 100000,
+  "target": 1000000,
+  "current": 950000,
   "type": "bar",
   "enemySize": 3
 }
