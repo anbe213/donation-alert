@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Goal Bar Widget</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="goal-bar-container">
+        <!-- Phần chứa background xám và thanh trượt màu xanh -->
+        <div id="progress-bar-bg">
+            <div id="progress-fill"></div>
+        </div>
+
+        <!-- Phần chữ đè lên trên thanh progress -->
+        <div id="text-overlay">
+            <div id="title-text" class="text-left">Loading...</div>
+            <div id="current-text" class="text-center">0</div>
+            <div id="target-text" class="text-right">0</div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

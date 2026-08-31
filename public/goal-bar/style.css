@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Xóa thanh cuộn trên OBS */
+    background: transparent;
+    font-family: 'Roboto', 'Arial', sans-serif; /* Phông chữ hiện đại, rõ nét */
+}
+
+#goal-bar-container {
+    position: relative;
+    width: 100vw; /* Chiếm toàn bộ chiều rộng của Browser Source */
+    height: 40px; /* Chiều cao cố định của thanh */
+    box-sizing: border-box;
+    border: 1px solid #333; /* Viền mỏng màu đen như trong hình */
+}
+
+/* Background nền xám nhạt */
+#progress-bar-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #e0e0e0; /* Xám nhạt */
+    z-index: 1;
+}
+
+/* Thanh fill màu xanh lá cây */
+#progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%; /* JS sẽ điều khiển */
+    background-color: #76ff03; /* Màu xanh lá mạ tươi như hình */
+    transition: width 1s ease-out;
+    z-index: 2;
+}
+
+/* Khung chứa Text đè lên trên tất cả */
+#text-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px; /* Cách mép 2 bên một khoảng */
+    box-sizing: border-box;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* Các định dạng chung cho text */
+#text-overlay div {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000; /* Màu đen */
+    flex: 1; /* Chia đều không gian 3 phần */
+}
+
+.text-left {
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
