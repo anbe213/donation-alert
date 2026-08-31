@@ -45,6 +45,21 @@ app.post('/api/apibank/webhook', webhookController.handleWebhook);
 // Socket.io kết nối
 io.on('connection', (socket) => {
     console.log('[Socket] Một client OBS (Frontend) vừa kết nối.');
+    
+    // Gửi trạng thái Goal khi có client yêu cầu
+    socket.on('request_goal_init', () => {
+        try {
+            const fs = require('fs');
+            const goalPath = path.join(__dirname, 'goal.json');
+            if (fs.existsSync(goalPath)) {
+                const goalData = JSON.parse(fs.readFileSync(goalPath, 'utf8'));
+                socket.emit('update_goal', goalData);
+            }
+        } catch (e) {
+            console.error('[Socket] Lỗi đọc goal.json:', e.message);
+        }
+    });
+
     socket.on('disconnect', () => {
         console.log('[Socket] Client OBS đã ngắt kết nối.');
     });

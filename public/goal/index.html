@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Goal Widget</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="goal-container">
+        <!-- Tên của mục tiêu (Ví dụ: Nâng cấp máy tính) -->
+        <div id="goal-title">Loading Goal...</div>
+        
+        <!-- Bình chứa máu/nước -->
+        <div id="flask-wrapper">
+            <div id="flask">
+                <div id="liquid"></div>
+                <!-- Ánh thủy tinh -->
+                <div id="glass-reflection"></div>
+                <!-- Nút bần (cork) -->
+                <div id="cork"></div>
+            </div>
+            
+            <!-- Phần trăm hiện đè lên bình -->
+            <div id="percent-text">0%</div>
+        </div>
+
+        <!-- Số tiền -->
+        <div id="goal-text">0 / 0 VNĐ</div>
+    </div>
+
+    <!-- Script kết nối Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

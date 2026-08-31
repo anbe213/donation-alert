@@ -262,6 +262,21 @@ const handleWebhook = async (req, res) => {
             await db.saveDonation(donationInfo);
             req.io.emit('new_donation', donationInfo);
             console.log(`[Webhook] => NHẬN DONATE THÀNH CÔNG: ${donationInfo.amount}đ`);
+
+            // --- Cập nhật Donation Goal ---
+            try {
+                const goalPath = path.join(__dirname, '../goal.json');
+                if (fs.existsSync(goalPath)) {
+                    let goalData = JSON.parse(fs.readFileSync(goalPath, 'utf8'));
+                    goalData.current += donationInfo.amount;
+                    fs.writeFileSync(goalPath, JSON.stringify(goalData, null, 2), 'utf8');
+                    // Báo cho giao diện Goal cập nhật
+                    req.io.emit('update_goal', goalData);
+                }
+            } catch (err) {
+                console.error('[Webhook] Lỗi cập nhật goal.json:', err.message);
+            }
+
         } else {
             console.log(`[Webhook] => Bỏ qua vì số tiền = 0 hoặc không tìm thấy trường số tiền.`);
         }

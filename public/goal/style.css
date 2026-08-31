@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Palatino:ital,wght@0,400;0,700;1,400&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: transparent;
+    font-family: 'Palatino', 'Times New Roman', serif;
+}
+
+#goal-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    width: 350px;
+}
+
+/* Tiêu đề mục tiêu */
+#goal-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ffeba1;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 10px #ff8c00;
+    text-align: center;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+/* Wrapper chứa bình và số % */
+#flask-wrapper {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Chiếc bình (Test tube shape, nghiêng) */
+#flask {
+    position: relative;
+    width: 40px;
+    height: 260px;
+    background: linear-gradient(90deg, rgba(30,30,30,0.8) 0%, rgba(80,80,80,0.5) 50%, rgba(20,20,20,0.9) 100%);
+    border: 3px solid #8b7355; /* Viền kim loại cổ/đồng */
+    border-radius: 20px;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.9), 5px 5px 15px rgba(0,0,0,0.5);
+    overflow: hidden;
+    transform: rotate(30deg); /* Độ nghiêng giống hình */
+}
+
+/* Chất lỏng màu xanh */
+#liquid {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0%; /* JS điều khiển */
+    background: linear-gradient(180deg, #1e90ff, #00008b); /* Xanh nước biển */
+    transition: height 1.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+    box-shadow: 0 -3px 10px rgba(0, 0, 255, 0.6);
+}
+
+/* Ánh phản chiếu của bóng thủy tinh (dọc theo bình) */
+#glass-reflection {
+    position: absolute;
+    top: 5%;
+    left: 10%;
+    width: 25%;
+    height: 90%;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.3), transparent);
+    border-radius: 10px;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* Nút bần (cork) */
+#cork {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 20px;
+    background: #5c4033;
+    border-radius: 5px 5px 0 0;
+    border: 2px solid #3b2a20;
+    z-index: 4;
+}
+
+/* Phần trăm hiển thị ngang đè lên */
+#percent-text {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 32px;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px #000, 0px 0px 8px #000, 0px 0px 12px rgba(0,0,0,0.8);
+    z-index: 10;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Dòng text chứa số tiền */
+#goal-text {
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffeba1;
+    text-shadow: 2px 2px 3px #000;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 8px 20px;
+    border: 2px solid #8b7355;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+}
