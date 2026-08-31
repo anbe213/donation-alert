@@ -19,7 +19,7 @@ const updateGoalUI = (goalData) => {
     // Cập nhật text số tiền
     const current = goalData.current || 0;
     const target = goalData.target || 1; // Tránh chia cho 0
-    textEl.innerText = `${formatMoney(current)} / ${formatMoney(target)} đ`;
+    textEl.innerText = `${formatMoney(current)} / ${formatMoney(target)}`;
 
     // Cập nhật chiều cao chất lỏng
     let percentage = (current / target) * 100;
