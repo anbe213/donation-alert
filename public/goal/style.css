@@ -125,6 +125,7 @@ body {
    ========================================= */
 #theme-bar {
     font-family: 'Roboto', 'Arial', sans-serif;
+    padding-top: 60px; /* Chừa khoảng trống phía trên cho nhân vật */
 }
 
 #goal-bar-container {
@@ -133,6 +134,18 @@ body {
     height: 40px; 
     box-sizing: border-box;
     border: 1px solid #333;
+}
+
+/* CSS cho nhân vật */
+#bar-character {
+    position: absolute;
+    bottom: 100%; /* Đặt ngay phía trên mép của thanh bar */
+    left: 0%;
+    transform: translateX(-50%); /* Căn giữa ảnh vào đầu thanh process */
+    height: 60px; /* Chiều cao mặc định của ảnh nhân vật */
+    z-index: 10;
+    transition: left 1s ease-out; /* Mượt mà di chuyển cùng thanh fill */
+    pointer-events: none;
 }
 
 #progress-bar-bg {
