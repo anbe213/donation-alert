@@ -1,7 +1,7 @@
 {
-  "title": "Bills + BlizzCon Expenses",
-  "target": 1000,
-  "current": 506.91,
+  "title": "Stream 2/9",
+  "target": 2000000,
+  "current": 100000,
   "type": "bar",
-  "enemySize": 1.5
+  "enemySize": 3
 }

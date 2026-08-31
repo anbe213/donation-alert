@@ -129,11 +129,13 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
+    box-sizing: border-box;
+    padding: 0 80px; /* Cách hai mép màn hình 80px để enemy không bị cắt khi ở 0% hoặc 100% */
 }
 
 #goal-bar-container {
     position: relative;
-    width: 100vw;
+    width: 100%; /* Sửa từ 100vw thành 100% để nằm gọn trong padding của theme-bar */
     height: 40px; 
     box-sizing: border-box;
     border: 1px solid #333;
