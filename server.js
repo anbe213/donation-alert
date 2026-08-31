@@ -50,7 +50,7 @@ io.on('connection', (socket) => {
     socket.on('request_goal_init', () => {
         try {
             const fs = require('fs');
-            const goalPath = path.join(__dirname, 'goal.json');
+            const goalPath = path.join(__dirname, 'public/goal/goal.json');
             if (fs.existsSync(goalPath)) {
                 const goalData = JSON.parse(fs.readFileSync(goalPath, 'utf8'));
                 socket.emit('update_goal', goalData);

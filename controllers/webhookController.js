@@ -265,7 +265,7 @@ const handleWebhook = async (req, res) => {
 
             // --- Cập nhật Donation Goal ---
             try {
-                const goalPath = path.join(__dirname, '../goal.json');
+                const goalPath = path.join(__dirname, '../public/goal/goal.json');
                 if (fs.existsSync(goalPath)) {
                     let goalData = JSON.parse(fs.readFileSync(goalPath, 'utf8'));
                     goalData.current += donationInfo.amount;
