@@ -21,7 +21,7 @@ const updatePotionUI = (current, target, percentage, title) => {
 };
 
 // Cập nhật giao diện Bar
-const updateBarUI = (current, target, percentage, title) => {
+const updateBarUI = (current, target, percentage, title, enemySize) => {
     document.getElementById('theme-bar').style.display = 'block';
     document.getElementById('theme-potion').style.display = 'none';
 
@@ -34,6 +34,10 @@ const updateBarUI = (current, target, percentage, title) => {
     // Cập nhật nhân vật chạy trên thanh
     const charImg = document.getElementById('bar-character');
     if (charImg) {
+        // Cập nhật kích thước nhân vật (mặc định 60px)
+        const baseHeight = 60;
+        charImg.style.height = `${baseHeight * enemySize}px`;
+
         // Tính toán index (1 đến 10)
         // VD: 0 - 9.99% -> enemy1.gif
         // ... 90 - 100% -> enemy10.gif
@@ -69,13 +73,14 @@ const updateGoalUI = (goalData) => {
     const target = goalData.target || 1; 
     const title = goalData.title || "Donation Goal";
     const type = goalData.type || "potion";
+    const enemySize = goalData.enemySize || 1;
 
     let percentage = (current / target) * 100;
     if (percentage > 100) percentage = 100;
     if (percentage < 0) percentage = 0;
 
     if (type === 'bar') {
-        updateBarUI(current, target, percentage, title);
+        updateBarUI(current, target, percentage, title, enemySize);
     } else {
         updatePotionUI(current, target, percentage, title);
     }
