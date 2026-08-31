@@ -7,32 +7,44 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="goal-container">
-        <!-- Tên của mục tiêu (Ví dụ: Nâng cấp máy tính) -->
-        <div id="goal-title">Loading Goal...</div>
-        
-        <!-- Vùng chứa toàn bộ bình và text -->
-        <div id="widget-body">
-            <!-- Cụm bình nước bị nghiêng -->
-            <div id="rotated-flask">
-                <!-- Nút bần (cork) nằm trên bình -->
-                <div id="cork"></div>
-                <div id="flask">
-                    <div id="liquid"></div>
-                    <!-- Ánh thủy tinh -->
-                    <div id="glass-reflection"></div>
-                </div>
-            </div>
-            
-            <!-- Phần trăm hiện đè lên bình (không nghiêng) -->
-            <div id="percent-text">0%</div>
-        </div>
 
-        <!-- Số tiền -->
-        <div id="goal-text">0 / 0 VNĐ</div>
+    <!-- THEME 1: POTION (Bình máu) -->
+    <div id="theme-potion" style="display: none;">
+        <div id="goal-container">
+            <div id="goal-title">Loading Goal...</div>
+            
+            <div id="widget-body">
+                <div id="rotated-flask">
+                    <div id="cork"></div>
+                    <div id="flask">
+                        <div id="liquid"></div>
+                        <div id="glass-reflection"></div>
+                    </div>
+                </div>
+                <div id="percent-text">0%</div>
+            </div>
+
+            <div id="goal-text">0 / 0</div>
+        </div>
     </div>
 
-    <!-- Script kết nối Socket.io -->
+    <!-- THEME 2: BAR (Thanh ngang) -->
+    <div id="theme-bar" style="display: none;">
+        <div id="goal-bar-container">
+            <!-- Phần chứa background xám và thanh trượt màu xanh -->
+            <div id="progress-bar-bg">
+                <div id="progress-fill"></div>
+            </div>
+
+            <!-- Phần chữ đè lên trên thanh progress -->
+            <div id="text-overlay">
+                <div id="bar-title-text" class="text-left">Loading...</div>
+                <div id="bar-current-text" class="text-center">0</div>
+                <div id="bar-target-text" class="text-right">0</div>
+            </div>
+        </div>
+    </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
 </body>

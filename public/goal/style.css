@@ -1,10 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Palatino:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Palatino:ital,wght@0,400;0,700;1,400&family=Roboto:wght@700&display=swap');
 
 body {
     margin: 0;
     padding: 0;
     overflow: hidden;
     background: transparent;
+}
+
+/* =========================================
+   THEME 1: POTION (BÌNH THỦY TINH)
+   ========================================= */
+#theme-potion {
     font-family: 'Palatino', 'Times New Roman', serif;
 }
 
@@ -17,7 +23,6 @@ body {
     width: 350px;
 }
 
-/* Tiêu đề mục tiêu */
 #goal-title {
     font-size: 22px;
     font-weight: bold;
@@ -28,7 +33,6 @@ body {
     letter-spacing: 1px;
 }
 
-/* Wrapper chứa toàn bộ widget (không xoay) */
 #widget-body {
     position: relative;
     width: 300px;
@@ -38,50 +42,45 @@ body {
     justify-content: center;
 }
 
-/* Container bị xoay nghiêng */
 #rotated-flask {
     display: flex;
     flex-direction: column;
     align-items: center;
-    transform: rotate(30deg); /* Xoay cả cụm */
+    transform: rotate(30deg);
 }
 
-/* Nút bần (cork) nằm ngoài và trên bình */
 #cork {
-    width: 34px; /* Hơi nhỏ hơn bình 40px */
+    width: 34px; 
     height: 15px;
     background: #5c4033;
     border: 2px solid #3b2a20;
-    border-bottom: none; /* Dính liền với miệng bình */
-    border-radius: 0; /* Vuông góc 100% */
+    border-bottom: none;
+    border-radius: 0;
     z-index: 4;
 }
 
-/* Chiếc bình (Test tube shape, phẳng đầu, bo tròn đáy) */
 #flask {
     position: relative;
     width: 40px;
     height: 250px;
     background: linear-gradient(90deg, rgba(30,30,30,0.8) 0%, rgba(255,255,255,0.2) 50%, rgba(20,20,20,0.9) 100%);
     border: 3px solid #8b7355; 
-    border-radius: 0 0 20px 20px; /* Phẳng đầu, bo tròn đáy */
+    border-radius: 0 0 20px 20px;
     box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.9), 5px 5px 15px rgba(0,0,0,0.5);
     overflow: hidden;
 }
 
-/* Chất lỏng màu xanh */
 #liquid {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 0%; /* JS điều khiển */
+    height: 0%;
     background: linear-gradient(180deg, #1e90ff, #00008b);
     transition: height 1.5s cubic-bezier(0.4, 0.0, 0.2, 1);
     box-shadow: 0 -3px 10px rgba(0, 0, 255, 0.6);
 }
 
-/* Ánh phản chiếu của bóng thủy tinh (dọc theo bình) */
 #glass-reflection {
     position: absolute;
     top: 5%;
@@ -94,12 +93,11 @@ body {
     pointer-events: none;
 }
 
-/* Phần trăm hiển thị ngang đè lên */
 #percent-text {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* Canh giữa hoàn hảo và KHÔNG bị xoay */
+    transform: translate(-50%, -50%);
     font-size: 32px;
     font-weight: bold;
     color: #ffffff;
@@ -108,7 +106,6 @@ body {
     font-family: 'Arial', sans-serif;
 }
 
-/* Dòng text chứa số tiền */
 #goal-text {
     margin-top: 10px;
     font-size: 20px;
@@ -120,4 +117,78 @@ body {
     border: 2px solid #8b7355;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+}
+
+
+/* =========================================
+   THEME 2: BAR (THANH NGANG)
+   ========================================= */
+#theme-bar {
+    font-family: 'Roboto', 'Arial', sans-serif;
+}
+
+#goal-bar-container {
+    position: relative;
+    width: 100vw;
+    height: 40px; 
+    box-sizing: border-box;
+    border: 1px solid #333;
+}
+
+#progress-bar-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #e0e0e0;
+    z-index: 1;
+}
+
+#progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background-color: #76ff03;
+    transition: width 1s ease-out;
+    z-index: 2;
+}
+
+#text-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    box-sizing: border-box;
+    z-index: 3;
+    pointer-events: none;
+}
+
+#text-overlay div {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+    flex: 1;
+}
+
+.text-left {
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
 }
