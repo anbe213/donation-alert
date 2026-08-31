@@ -43,8 +43,8 @@ body {
     position: relative;
     width: 40px;
     height: 260px;
-    /* Tăng độ sáng (trắng mờ) ở phần giữa ống để tạo cảm giác thủy tinh rỗng */
-    background: linear-gradient(90deg, rgba(30,30,30,0.8) 0%, rgba(255,255,255,0.4) 50%, rgba(20,20,20,0.9) 100%);
+    /* Làm thân ống trong suốt hơn với alpha 0.2 */
+    background: linear-gradient(90deg, rgba(30,30,30,0.8) 0%, rgba(255,255,255,0.2) 50%, rgba(20,20,20,0.9) 100%);
     border: 3px solid #8b7355; /* Viền kim loại cổ/đồng */
     border-radius: 20px;
     box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.9), 5px 5px 15px rgba(0,0,0,0.5);
@@ -72,23 +72,22 @@ body {
     width: 25%;
     height: 90%;
     /* Thêm xíu độ sáng trắng cho vệt phản chiếu */
-    background: linear-gradient(to right, rgba(255, 255, 255, 0.5), transparent);
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.3), transparent);
     border-radius: 10px;
     z-index: 3;
     pointer-events: none;
 }
 
-/* Nút bần (cork) */
+/* Nút bần (cork) bên trong bình */
 #cork {
     position: absolute;
-    top: -5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 30px;
-    height: 20px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 25px;
     background: #5c4033;
-    border-radius: 0; /* Đổi thành hình chữ nhật góc cạnh */
-    border: 2px solid #3b2a20;
+    border-radius: 0;
+    border-bottom: 2px solid #3b2a20;
     z-index: 4;
 }
 
