@@ -72,6 +72,40 @@ server.listen(PORT, async () => {
     console.log(`🔗 Cài vào OBS Browser Source: http://localhost:${PORT}/alert/index.html`);
     console.log(`===========================================\n`);
 
+    // Kiểm tra kết nối Groq API
+    try {
+        const fs = require('fs');
+        const configPath = path.join(__dirname, 'public/alert/config.json');
+        if (fs.existsSync(configPath)) {
+            const configData = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+            if (configData.enable_ai_parsing) {
+                console.log('🤖 Đang kiểm tra kết nối Groq API (AI Parsing)...');
+                const groqKey = process.env.GROQ_API_KEY;
+                const groqModel = process.env.GROQ_MODEL || 'qwen-3.8-27b';
+                
+                if (!groqKey || groqKey.includes('your_groq_api_key') || groqKey.trim() === '') {
+                    console.log('⚠️  CẢNH BÁO: Bạn đã bật AI Parsing nhưng chưa cấu hình GROQ_API_KEY trong file .env');
+                    console.log('⚠️  Hệ thống sẽ tự động chuyển về chế độ Regex truyền thống.');
+                } else {
+                    const response = await fetch('https://api.groq.com/openai/v1/models', {
+                        method: 'GET',
+                        headers: { 'Authorization': `Bearer ${groqKey}` }
+                    });
+                    if (response.ok) {
+                        console.log(`✅ GROQ API KẾT NỐI THÀNH CÔNG! (Model sẵn sàng: ${groqModel})`);
+                    } else {
+                        console.log(`❌ LỖI KẾT NỐI GROQ API: Bị từ chối (Mã lỗi HTTP ${response.status}). Vui lòng kiểm tra lại API Key.`);
+                    }
+                }
+            } else {
+                console.log('ℹ️  Tính năng AI Parsing đang tắt (Sử dụng cắt chữ Regex truyền thống).');
+            }
+        }
+    } catch (e) {
+        console.error('❌ Lỗi khi kiểm tra AI config:', e.message);
+    }
+    console.log('');
+
     // Tự động thiết lập đường hầm Ngrok
     try {
         console.log('Đang khởi tạo đường hầm Ngrok...');
