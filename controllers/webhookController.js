@@ -56,12 +56,10 @@ const handleWebhook = async (req, res) => {
         // 4. Parse JSON
         const data = JSON.parse(rawBody);
         
-        // Đọc config.json để lấy tuỳ chọn showLog và các config khác (đọc sớm hơn)
         const fs = require('fs');
         const path = require('path');
-        
         let enableAiParsing = false;
-        let groqApiKey = '';
+        let groqApiKey = process.env.GROQ_API_KEY || '';
         
         try {
             const configPath = path.join(__dirname, '../public/alert/config.json');
@@ -78,7 +76,6 @@ const handleWebhook = async (req, res) => {
             
             // Cấu hình AI
             if (configData.enable_ai_parsing !== undefined) enableAiParsing = configData.enable_ai_parsing;
-            if (configData.groq_api_key) groqApiKey = configData.groq_api_key;
             
         } catch (e) {
             console.error('[Webhook] Không thể đọc file config.json, dùng mặc định.');

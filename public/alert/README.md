@@ -3,8 +3,8 @@
 File `config.json` nằm trong thư mục này dùng để tùy chỉnh cách thức hoạt động của hệ thống thông báo Donate (Alert). Bạn có thể chỉnh sửa các thông số sau:
 
 - `showLog`: (true/false) Nếu bật là `true`, hệ thống sẽ lưu lại toàn bộ lịch sử các giao dịch donate gốc vào file `payloads.log` ở thư mục gốc của project (Dùng để kiểm tra khi bị lỗi đọc sai tên người gửi). Đồng thời hiển thị log trên màn hình console.
-- `enable_ai_parsing`: (true/false) Bật/tắt tính năng dùng AI để trích xuất tên người gửi, nội dung chuyển khoản và khôi phục dấu tiếng Việt cực chuẩn. 
-- `groq_api_key`: (Chuỗi ký tự) Mã khóa API của Groq để sử dụng tính năng AI Parsing. Bạn có thể lấy miễn phí tại console.groq.com.
+- `enable_ai_parsing`: (true/false) Bật/tắt tính năng dùng AI để trích xuất tên người gửi, nội dung chuyển khoản và khôi phục dấu tiếng Việt cực chuẩn.
+(Lưu ý: API Key của Groq nay đã được chuyển sang cấu hình trong file `.env` ở thư mục gốc của project với biến `GROQ_API_KEY` để đảm bảo bảo mật tối đa).
 - `enable_zalo_ai`: (true/false) Bật/tắt giọng đọc bằng Zalo AI (Hiện tại đang tạm tắt vì chúng ta đã chuyển sang dùng VieNeu TTS).
 - `enable_vieneu_tts`: (true/false) Bật/tắt giọng đọc bằng VieNeu TTS nội bộ cực mượt.
 - `vieneu_voice`: (Chuỗi ký tự) Chọn giọng đọc cho VieNeu TTS. Hiện tại đang được cài đặt là `"Ngọc Trân"`.
