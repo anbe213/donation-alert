@@ -53,10 +53,9 @@ function updateUI() {
     } else {
         middleEl.innerText = formatTime(currentSeconds);
         
-        let totalDuration = endSeconds - startSeconds;
         let percentage = 0;
-        if (totalDuration > 0) {
-            percentage = ((currentSeconds - startSeconds) / totalDuration) * 100;
+        if (endSeconds > 0) {
+            percentage = (currentSeconds / endSeconds) * 100;
         }
         
         if (percentage < 0) percentage = 0;
