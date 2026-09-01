@@ -60,6 +60,20 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Gửi trạng thái Countdown khi có client yêu cầu
+    socket.on('request_countdown_init', () => {
+        try {
+            const fs = require('fs');
+            const cdPath = path.join(__dirname, 'public/countdown/countdown.json');
+            if (fs.existsSync(cdPath)) {
+                const cdData = JSON.parse(fs.readFileSync(cdPath, 'utf8'));
+                socket.emit('update_countdown', cdData);
+            }
+        } catch (e) {
+            console.error('[Socket] Lỗi đọc countdown.json:', e.message);
+        }
+    });
+
     socket.on('disconnect', () => {
         console.log('[Socket] Client OBS đã ngắt kết nối.');
     });

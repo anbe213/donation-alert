@@ -322,6 +322,31 @@ Description: "${desc}"`;
             } catch (err) {
                 console.error('[Webhook] Lỗi cập nhật goal.json:', err.message);
             }
+            
+            // --- Cập nhật Subathon Countdown ---
+            try {
+                const cdPath = path.join(__dirname, '../public/countdown/countdown.json');
+                if (fs.existsSync(cdPath)) {
+                    let cdData = JSON.parse(fs.readFileSync(cdPath, 'utf8'));
+                    
+                    // Lấy thời gian hiện tại của dateB và cộng thêm phút
+                    let endDate = new Date(cdData.dateB);
+                    let incrementMinutes = parseFloat(cdData.increment) || 0;
+                    
+                    if (incrementMinutes > 0) {
+                        endDate.setMinutes(endDate.getMinutes() + incrementMinutes);
+                        cdData.dateB = endDate.toISOString(); // Format lại về chuẩn ISO
+                        
+                        // Lưu lại file
+                        fs.writeFileSync(cdPath, JSON.stringify(cdData, null, 2), 'utf8');
+                        // Báo cho Frontend
+                        req.io.emit('update_countdown', cdData);
+                        console.log(`[Webhook] Đã cộng thêm ${incrementMinutes} phút vào Countdown!`);
+                    }
+                }
+            } catch (err) {
+                console.error('[Webhook] Lỗi cập nhật countdown.json:', err.message);
+            }
 
         } else {
             console.log(`[Webhook] => Bỏ qua vì số tiền = 0 hoặc không tìm thấy trường số tiền.`);
