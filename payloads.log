@@ -57,3 +57,47 @@
   },
   "event_id": "evt_e941865d-c5c0-485f-955b-4731b4c8048e"
 }
+
+--- [2026-09-01T13:37:11.149Z] ---
+{
+  "event": "transaction.created",
+  "created_at": "2026-08-29T17:38:14.043270Z",
+  "data": {
+    "account": {
+      "bank_code": "bidv",
+      "account_no": "4281028297",
+      "account_name": "Luc Tieu linh",
+      "apibank_account_id": 20,
+      "apibank_user_id": 104,
+      "quanly_tenant_id": null,
+      "quanly_owner_user_id": null,
+      "source": "apibank_v3",
+      "provider": "tingee"
+    },
+    "transaction": {
+      "uid": "tingee_tx_3247a5f79de25e238b1523a40ae5edcac44d626f43a259c139214c1cf6594fb5",
+      "bank_code": "bidv",
+      "account_no": "4281028297",
+      "direction": "in",
+      "amount": 2000,
+      "signed_amount": 2000,
+      "ref_id": "c3bb1026-7de8-4e83-bd71-18558885b069",
+      "description": "MBVCB.15809698334.972789.LE XUAN PHU chuyen tien.CT tu 1020358145 LE XUAN PHU toi V1T60830002439 LUC",
+      "happened_at": "2026-08-30 00:38:00",
+      "raw": {
+        "clientId": "52cdd256022fde2d15fc99763fa7bad5",
+        "transactionCode": "c3bb1026-7de8-4e83-bd71-18558885b069",
+        "amount": 2000,
+        "content": "MBVCB.15809698334.972789.LE XUAN PHU chuyen tien.CT tu 1020358145 LE XUAN PHU toi V1T60830002439 LUC",
+        "type": "credit",
+        "bank": "BIDV",
+        "bankBin": "970418",
+        "accountNumber": "4281028297",
+        "vaAccountNumber": "V1T60830002439",
+        "transactionDate": "20260830003800",
+        "additionalData": []
+      }
+    }
+  },
+  "event_id": "evt_e941865d-c5c0-485f-955b-4731b4c8048e"
+}

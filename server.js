@@ -81,7 +81,7 @@ server.listen(PORT, async () => {
             if (configData.enable_ai_parsing) {
                 console.log('🤖 Đang kiểm tra kết nối Groq API (AI Parsing)...');
                 const groqKey = process.env.GROQ_API_KEY;
-                const groqModel = process.env.GROQ_MODEL || 'qwen-3.8-27b';
+                const groqModel = process.env.GROQ_MODEL || 'qwen/qwen3.8-27b';
                 
                 if (!groqKey || groqKey.includes('your_groq_api_key') || groqKey.trim() === '') {
                     console.log('⚠️  CẢNH BÁO: Bạn đã bật AI Parsing nhưng chưa cấu hình GROQ_API_KEY trong file .env');

@@ -187,7 +187,7 @@ Description: "${desc}"`;
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            model: process.env.GROQ_MODEL || 'qwen-3.8-27b',
+                            model: process.env.GROQ_MODEL || 'qwen/qwen3.8-27b',
                             messages: [{ role: 'user', content: prompt }],
                             temperature: 0.1
                         })
