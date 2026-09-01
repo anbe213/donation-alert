@@ -7,11 +7,16 @@
 </head>
 <body>
     <div id="countdown-wrapper">
-        <!-- Nhân vật chạy trên thanh -->
-        <img id="cd-character" src="" alt="enemy" onerror="this.src=this.src.replace('.webp', '.gif')">
-
         <div id="countdown-bar-container">
-            <div id="countdown-bar-fill"></div>
+            <!-- Nhân vật chạy trên thanh -->
+            <img id="cd-character" src="" alt="enemy" onerror="this.src=this.src.replace('.webp', '.gif')">
+
+            <!-- Phần background và progress fill (bị cắt bo góc) -->
+            <div id="countdown-progress-bg">
+                <div id="countdown-bar-fill"></div>
+            </div>
+
+            <!-- Chữ đè lên trên -->
             <div id="countdown-bar-content">
                 <div id="cd-title">TITLE</div>
                 <div id="cd-middle">DATE A</div>

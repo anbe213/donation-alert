@@ -68,6 +68,10 @@ function updateUI() {
         const charEl = document.getElementById('cd-character');
         charEl.style.display = 'block';
         
+        if (countdownData.enemySize) {
+            charEl.style.height = `${countdownData.enemySize}px`;
+        }
+        
         // Tính left position (phải trừ hao paddding 2 bên nếu có, nhưng ở đây width 100% nên gán % luôn)
         // Để nhân vật không bị cắt mất ở mép, ta giữ nguyên transform: translateX(-50%) ở CSS.
         // Giới hạn ở 100%

@@ -21,6 +21,7 @@ Mở file `countdown.json` nằm trong thư mục `public/countdown/` bằng Not
   "end": "12:00:00",
   "limit": "18:00:00",
   "incrementPerHundred": 60,
+  "enemySize": 60,
   "real_start_time": ""
 }
 ```
@@ -31,6 +32,7 @@ Mở file `countdown.json` nằm trong thư mục `public/countdown/` bằng Not
 - **`limit`**: Thời lượng tối đa (Ví dụ: `18:00:00`). Khi nhận donate, `end` tăng lên sẽ không bao giờ được phép vượt qua `limit` này.
 - **`incrementPerHundred`**: Số phút được cộng thêm vào `end` cho **mỗi 100,000 VNĐ** donate.
   - *Ví dụ:* Nếu để `60`, ai đó donate 100k -> cộng 60 phút. Donate 50k -> cộng 30 phút. Donate 10k -> cộng 6 phút.
+- **`enemySize`**: Kích thước (chiều cao) của nhân vật chạy trên thanh (Ví dụ: `60`).
 - **`real_start_time`**: Đây là mốc thời gian hệ thống lưu lại lúc thanh trượt bắt đầu chạy. Bạn hãy để rỗng `""`, phần mềm sẽ tự điền mốc thời gian lúc server chạy. 
   - **Cách RESET lại bộ đếm từ đầu:** Xoá giá trị ở trường này thành chuỗi rỗng `""` và lưu lại file, hệ thống sẽ tự động bắt đầu tính giờ lại từ mốc `start`.
 
