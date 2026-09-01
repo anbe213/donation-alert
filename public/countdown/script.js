@@ -63,6 +63,33 @@ function updateUI() {
         if (percentage > 100) percentage = 100;
         
         fillEl.style.width = `${percentage}%`;
+        
+        // --- Xử lý Nhân vật cưỡi trên thanh (Enemy) ---
+        const charEl = document.getElementById('cd-character');
+        charEl.style.display = 'block';
+        
+        // Tính left position (phải trừ hao paddding 2 bên nếu có, nhưng ở đây width 100% nên gán % luôn)
+        // Để nhân vật không bị cắt mất ở mép, ta giữ nguyên transform: translateX(-50%) ở CSS.
+        // Giới hạn ở 100%
+        charEl.style.left = `${percentage}%`;
+        
+        // Chọn ảnh Enemy theo 4 giai đoạn
+        let enemyIndex = 1;
+        if (percentage < 25) {
+            enemyIndex = 1;
+        } else if (percentage < 50) {
+            enemyIndex = 2;
+        } else if (percentage < 75) {
+            enemyIndex = 3;
+        } else {
+            enemyIndex = 4;
+        }
+        
+        const expectedSrc = `assets/enemy${enemyIndex}.webp`;
+        // Chỉ gán lại src nếu nó thay đổi để tránh ảnh bị giật (reload) liên tục
+        if (!charEl.src.includes(`enemy${enemyIndex}.webp`) && !charEl.src.includes(`enemy${enemyIndex}.gif`)) {
+            charEl.src = expectedSrc;
+        }
     }
 }
 
