@@ -115,6 +115,13 @@ const handleWebhook = async (req, res) => {
         // Lấy đúng dữ liệu giao dịch từ cấu trúc của APIBank (data.data.transaction)
         const tx = (data.data && data.data.transaction) ? data.data.transaction : data;
 
+        // --- Bỏ qua giao dịch TEST từ APIBank ---
+        const rawDescTest = (tx.description || tx.content || '').toLowerCase();
+        if (rawDescTest.includes('test webhook') || rawDescTest.includes('giao dịch thử nghiệm') || rawDescTest === 'test' || (tx.amount === 50000 && rawDescTest.includes('test'))) {
+            console.log(`[Webhook] => Đã bỏ qua giao dịch TEST từ hệ thống APIBank (Không cộng vào Goal).`);
+            return res.status(200).send('Success (Test Ignored)');
+        }
+
         // --- HÀM 1: Dọn dẹp nội dung bằng Regex (Fallback truyền thống) ---
         const extractMessageAndSenderFallback = (desc) => {
             let result = { message: 'Không có lời nhắn', senderName: 'Người xem ẩn danh' };
@@ -182,7 +189,6 @@ Description: "${desc}"`;
                         body: JSON.stringify({
                             model: process.env.GROQ_MODEL || 'qwen-3.8-27b',
                             messages: [{ role: 'user', content: prompt }],
-                            response_format: { type: 'json_object' },
                             temperature: 0.1
                         })
                     });
@@ -192,7 +198,11 @@ Description: "${desc}"`;
                     }
                     
                     const responseData = await response.json();
-                    const aiResult = JSON.parse(responseData.choices[0].message.content);
+                    let rawContent = responseData.choices[0].message.content;
+                    // Dọn dẹp markdown code block nếu AI tự bọc vào
+                    rawContent = rawContent.replace(/```json/gi, '').replace(/```/g, '').trim();
+                    
+                    const aiResult = JSON.parse(rawContent);
                     console.log("[AI Parsing] Thành công:", aiResult);
                     
                     // Xử lý logic nếu AI trả rỗng thì dùng fallback text mặc định
