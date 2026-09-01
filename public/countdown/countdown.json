@@ -1,9 +1,9 @@
 {
   "title": "🔴 SUBATHON",
-  "start": "00:03:00",
+  "start": "00:11:00",
   "end": "12:00:00",
   "limit": "18:00:00",
   "incrementPerHundred": 60,
-  "enemySize": 60,
-  "real_start_time": "2026-09-01T17:29:51.521Z"
+  "enemySize": 1,
+  "real_start_time": "2026-09-01T17:37:51.592Z"
 }

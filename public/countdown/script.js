@@ -69,7 +69,8 @@ function updateUI() {
         charEl.style.display = 'block';
         
         if (countdownData.enemySize) {
-            charEl.style.height = `${countdownData.enemySize}px`;
+            const baseHeight = 60;
+            charEl.style.height = `${baseHeight * parseFloat(countdownData.enemySize)}px`;
         }
         
         // Tính left position (phải trừ hao paddding 2 bên nếu có, nhưng ở đây width 100% nên gán % luôn)

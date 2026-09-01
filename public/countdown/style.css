@@ -1,9 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Palatino:ital,wght@0,400;0,700;1,400&family=Roboto:wght@700&display=swap');
+
 body {
     margin: 0;
     overflow: hidden;
     background-color: transparent;
     color: white;
-    font-family: 'Roboto', 'Arial', sans-serif;
+    font-family: 'Palatino', 'Times New Roman', serif;
     font-weight: bold;
     font-size: 20px;
 }
@@ -31,11 +33,13 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    border: 2px solid #333;
-    border-radius: 10px;
+    /* Nền gỗ/giấy cuộn tối màu */
+    background-color: rgba(30, 20, 10, 0.85);
+    /* Viền gỗ đậm */
+    border: 3px solid #5c4033;
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.9), 0 5px 15px rgba(0,0,0,0.6);
     box-sizing: border-box;
     z-index: 1;
 }
@@ -58,7 +62,9 @@ body {
     left: 0;
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, #ff0844 0%, #ffb199 100%);
+    /* Gradient vàng óng / đỏ máu tuỳ thuộc ý thích, ở đây xài Vàng/Cam rực rỡ */
+    background: linear-gradient(90deg, #b8860b 0%, #ff8c00 50%, #ffd700 100%);
+    box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.4);
     transition: width 0.5s ease;
     z-index: 2;
 }
@@ -74,21 +80,25 @@ body {
     align-items: center;
     padding: 0 15px;
     box-sizing: border-box;
-    text-shadow: 1px 1px 3px black, -1px -1px 3px black, 1px -1px 3px black, -1px 1px 3px black;
+    text-shadow: 2px 2px 4px #000, 0 0 5px rgba(0,0,0,0.8);
     z-index: 2;
 }
 
 #cd-title {
     color: #ffd700;
+    font-size: 22px;
+    letter-spacing: 1px;
 }
 
 #cd-middle {
     text-align: center;
     flex: 1;
-    font-size: 22px;
-    letter-spacing: 1px;
+    font-size: 24px;
+    letter-spacing: 2px;
+    color: #fff8dc;
 }
 
 #cd-end {
-    color: #00ffcc;
+    color: #ffeba1;
+    font-size: 20px;
 }
