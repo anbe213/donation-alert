@@ -8,7 +8,7 @@ Thêm một **Browser Source** vào OBS với đường dẫn:
 `http://localhost:3000/countdown/index.html`
 
 - Đặt chiều rộng (Width): `800`
-- Đặt chiều cao (Height): `60`
+- Đặt chiều cao (Height): `200` (Phải để đủ cao để không bị cắt mất hình ảnh quái vật khi nó phóng to, nếu quái vật bị mất đầu hãy tăng số này lên).
 
 ## File Cấu Hình (`countdown.json`)
 
