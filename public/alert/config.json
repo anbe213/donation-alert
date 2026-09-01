@@ -1,5 +1,7 @@
 {
   "showLog": true,
+  "enable_ai_parsing": true,
+  "groq_api_key": "YOUR_GROQ_API_KEY_HERE",
   "enable_zalo_ai": false,
   "enable_vieneu_tts": true,
   "vieneu_voice": "Ngọc Trân",

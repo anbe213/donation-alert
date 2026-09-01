@@ -60,13 +60,8 @@ const handleWebhook = async (req, res) => {
         const fs = require('fs');
         const path = require('path');
         
-        let showLog = false;
-        let ttsViTemplate = "{name} đã donate {amount} với lời nhắn {message}";
-        let ttsEnTemplate = "{name} sent you {amount} with message {message}";
-        let enableVieneu = false;
-        let vieneuVoice = "Phạm Tuyên";
-        let rainDensity = 1;
-        let rainTiers = { tier1_min: 0, tier2_min: 20000, tier3_min: 50000, tier4_min: 100000 };
+        let enableAiParsing = false;
+        let groqApiKey = '';
         
         try {
             const configPath = path.join(__dirname, '../public/alert/config.json');
@@ -80,6 +75,11 @@ const handleWebhook = async (req, res) => {
             if (configData.vieneu_voice) vieneuVoice = configData.vieneu_voice;
             if (configData.rain_density !== undefined) rainDensity = configData.rain_density;
             if (configData.rain_tiers) rainTiers = configData.rain_tiers;
+            
+            // Cấu hình AI
+            if (configData.enable_ai_parsing !== undefined) enableAiParsing = configData.enable_ai_parsing;
+            if (configData.groq_api_key) groqApiKey = configData.groq_api_key;
+            
         } catch (e) {
             console.error('[Webhook] Không thể đọc file config.json, dùng mặc định.');
         }
@@ -118,52 +118,39 @@ const handleWebhook = async (req, res) => {
         // Lấy đúng dữ liệu giao dịch từ cấu trúc của APIBank (data.data.transaction)
         const tx = (data.data && data.data.transaction) ? data.data.transaction : data;
 
-        // --- Hàm dọn dẹp nội dung rác của ngân hàng ---
-        const extractMessageAndSender = (desc) => {
+        // --- HÀM 1: Dọn dẹp nội dung bằng Regex (Fallback truyền thống) ---
+        const extractMessageAndSenderFallback = (desc) => {
             let result = { message: 'Không có lời nhắn', senderName: 'Người xem ẩn danh' };
             if (!desc) return result;
             
-            // --- TÌM TÊN NGƯỜI GỬI ---
-            // Rule 4: Tên thường là 3 từ liên tiếp (trở lên) viết hoa toàn bộ và không chứa số.
+            // Tìm tên người gửi
             const threeWordsMatch = desc.match(/\b([A-Z]+(?:\s+[A-Z]+){2,5})\b/);
             const twoWordsMatch = desc.match(/\b([A-Z]+(?:\s+[A-Z]+){1})\b/);
             
             if (threeWordsMatch) {
                 result.senderName = threeWordsMatch[1].trim();
             } else if (twoWordsMatch) {
-                // Fallback nếu tên người gửi chỉ có 2 chữ (VD: LÊ PHÚ)
                 let name = twoWordsMatch[1].trim();
-                // Bỏ qua nếu bắt nhầm chữ CT (Chuyển tiền)
                 if (!name.startsWith('CT ')) {
                     result.senderName = name;
                 }
             }
 
-            // --- LỌC TIN NHẮN ---
+            // Lọc tin nhắn
             const parts = desc.split('.');
             let validMsgParts = [];
 
             for (let i = 0; i < parts.length; i++) {
                 const p = parts[i].trim();
                 if (!p) continue;
-
-                // Rule 1: Chắc chắn phần đầu không phải phần tin nhắn
                 if (i === 0) continue;
-
-                // Rule 3: Phần mà toàn là ký tự số cũng gần như sẽ không phải tin nhắn
                 if (/^\d+$/.test(p)) continue;
-
-                // Rule 2: Phần mà có một chuỗi ký tự (số hoặc chữ liền mạch không dấu cách) 
-                // dài quá 8 ký tự 99% không phải tin nhắn (là mã GD)
                 if (!p.includes(' ') && p.length > 8) continue;
 
-                // Loại trừ nốt phần chứa "CT tu" (nơi chứa tên người gửi) vì nó không phải tin nhắn
                 const pLower = p.toLowerCase();
                 if (pLower.includes('ct tu') || pLower.includes('chuyen tien tu') || pLower.includes('nhan tu')) {
                     continue;
                 }
-
-                // Vượt qua tất cả rào cản trên thì 99% nó là tin nhắn!
                 validMsgParts.push(p);
             }
 
@@ -174,7 +161,59 @@ const handleWebhook = async (req, res) => {
             return result;
         };
 
-        const extractedData = extractMessageAndSender(tx.description || tx.content);
+        // --- HÀM 2: Dọn dẹp nội dung bằng AI (Groq API) kết hợp Fallback ---
+        const extractMessageAndSenderAI = async (desc) => {
+            if (!desc) return { message: 'Không có lời nhắn', senderName: 'Người xem ẩn danh' };
+
+            if (enableAiParsing && groqApiKey && groqApiKey !== "YOUR_GROQ_API_KEY_HERE") {
+                try {
+                    console.log("[AI Parsing] Đang gửi yêu cầu lên Groq API (Llama 3.1 70B)...");
+                    const prompt = `Bạn là một trợ lý ảo chuyên trích xuất dữ liệu giao dịch ngân hàng.
+Nhiệm vụ của bạn: Đọc chuỗi 'description' từ ngân hàng, trích xuất 'Tên người gửi' và 'Nội dung chuyển khoản'.
+Bạn phải khôi phục dấu tiếng Việt cho tên và nội dung sao cho hợp lý nhất theo ngữ cảnh. Loại bỏ tất cả các mã giao dịch, số điện thoại, chữ rác của hệ thống (như 'NHAN TU', 'TRACE', 'ND', 'chuyen tien den', 'qua MoMo', 'FT...'). Nếu nội dung chỉ chứa tên người gửi và mã rác, hãy để nội dung là rỗng.
+CHỈ trả về định dạng JSON duy nhất, không giải thích gì thêm:
+{ "sender_name": "Tên Đã Có Dấu", "message": "Nội dung đã có dấu" }
+
+Description: "${desc}"`;
+
+                    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${groqApiKey}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            model: 'llama-3.1-70b-versatile',
+                            messages: [{ role: 'user', content: prompt }],
+                            response_format: { type: 'json_object' },
+                            temperature: 0.1
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Groq API error! status: ${response.status}`);
+                    }
+                    
+                    const responseData = await response.json();
+                    const aiResult = JSON.parse(responseData.choices[0].message.content);
+                    console.log("[AI Parsing] Thành công:", aiResult);
+                    
+                    // Xử lý logic nếu AI trả rỗng thì dùng fallback text mặc định
+                    let finalName = aiResult.sender_name && aiResult.sender_name.trim() !== "" ? aiResult.sender_name : 'Người xem ẩn danh';
+                    let finalMsg = aiResult.message && aiResult.message.trim() !== "" ? aiResult.message : 'Không có lời nhắn';
+                    
+                    return { senderName: finalName, message: finalMsg };
+                    
+                } catch (e) {
+                    console.error("[AI Parsing] Lỗi khi gọi Groq API, tự động Fallback về Regex truyền thống:", e.message);
+                    return extractMessageAndSenderFallback(desc);
+                }
+            } else {
+                return extractMessageAndSenderFallback(desc);
+            }
+        };
+
+        const extractedData = await extractMessageAndSenderAI(tx.description || tx.content);
 
         const donationInfo = {
             event_id: currentEventId,
