@@ -16,51 +16,54 @@ socket.on('update_countdown', (data) => {
     updateUI();
 });
 
-function formatTime(date) {
-    return date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+function parseTime(str) {
+    const parts = (str || "00:00:00").split(':').map(Number);
+    let hours = parts[0] || 0;
+    let minutes = parts[1] || 0;
+    let seconds = parts[2] || 0;
+    return hours * 3600 + minutes * 60 + seconds;
+}
+
+function formatTime(totalSeconds) {
+    let h = Math.floor(totalSeconds / 3600);
+    let m = Math.floor((totalSeconds % 3600) / 60);
+    let s = Math.floor(totalSeconds % 60);
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 }
 
 function updateUI() {
     if (!countdownData) return;
     
     titleEl.innerText = countdownData.title;
+    endEl.innerText = countdownData.end;
     
-    const dateA = new Date(countdownData.dateA);
-    const dateB = new Date(countdownData.dateB);
-    const now = new Date();
+    let startSeconds = parseTime(countdownData.start);
+    let endSeconds = parseTime(countdownData.end);
+    let realStartTime = countdownData.real_start_time ? new Date(countdownData.real_start_time).getTime() : Date.now();
+    let now = Date.now();
     
-    // Bên phải là dateB (Giờ kết thúc)
-    endEl.innerText = "End: " + formatTime(dateB);
+    let elapsedRealSeconds = Math.floor((now - realStartTime) / 1000);
+    if (elapsedRealSeconds < 0) elapsedRealSeconds = 0;
     
-    // Tính toán thời gian còn lại
-    const remainingMs = dateB.getTime() - now.getTime();
+    let currentSeconds = startSeconds + elapsedRealSeconds;
     
-    if (remainingMs <= 0) {
-        middleEl.innerText = "HẾT GIỜ!";
+    if (currentSeconds >= endSeconds) {
+        middleEl.innerText = formatTime(endSeconds) + " (HẾT GIỜ!)";
         fillEl.style.width = '100%';
-        return;
+    } else {
+        middleEl.innerText = formatTime(currentSeconds);
+        
+        let totalDuration = endSeconds - startSeconds;
+        let percentage = 0;
+        if (totalDuration > 0) {
+            percentage = ((currentSeconds - startSeconds) / totalDuration) * 100;
+        }
+        
+        if (percentage < 0) percentage = 0;
+        if (percentage > 100) percentage = 100;
+        
+        fillEl.style.width = `${percentage}%`;
     }
-    
-    // Chuyển đổi sang HH:MM:SS
-    const totalSeconds = Math.floor(remainingMs / 1000);
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    
-    const timeStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    
-    // Ở giữa: Thể hiện Date A (Giờ bắt đầu) và Thời gian đếm ngược
-    middleEl.innerText = `${formatTime(dateA)} ⏳ ${timeStr}`;
-    
-    // Tính toán phần trăm thanh chạy
-    const totalDuration = dateB.getTime() - dateA.getTime();
-    const elapsed = now.getTime() - dateA.getTime();
-    
-    let percentage = (elapsed / totalDuration) * 100;
-    if (percentage < 0) percentage = 0;
-    if (percentage > 100) percentage = 100;
-    
-    fillEl.style.width = `${percentage}%`;
 }
 
 // Cập nhật mỗi giây

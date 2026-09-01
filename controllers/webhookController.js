@@ -329,19 +329,43 @@ Description: "${desc}"`;
                 if (fs.existsSync(cdPath)) {
                     let cdData = JSON.parse(fs.readFileSync(cdPath, 'utf8'));
                     
-                    // Lấy thời gian hiện tại của dateB và cộng thêm phút
-                    let endDate = new Date(cdData.dateB);
-                    let incrementMinutes = parseFloat(cdData.increment) || 0;
-                    
-                    if (incrementMinutes > 0) {
-                        endDate.setMinutes(endDate.getMinutes() + incrementMinutes);
-                        cdData.dateB = endDate.toISOString(); // Format lại về chuẩn ISO
+                    let incrementPerHundred = parseFloat(cdData.incrementPerHundred) || 0;
+                    if (incrementPerHundred > 0 && donationInfo.amount > 0) {
+                        
+                        // Parse time "HH:MM:SS" -> seconds
+                        const parseTime = (str) => {
+                            const parts = (str || "00:00:00").split(':').map(Number);
+                            return (parts[0] || 0) * 3600 + (parts[1] || 0) * 60 + (parts[2] || 0);
+                        };
+                        // Format seconds -> "HH:MM:SS"
+                        const formatTime = (totalSec) => {
+                            let h = Math.floor(totalSec / 3600);
+                            let m = Math.floor((totalSec % 3600) / 60);
+                            let s = Math.floor(totalSec % 60);
+                            return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                        };
+                        
+                        let addedMinutes = (donationInfo.amount / 100000) * incrementPerHundred;
+                        let addedSeconds = Math.floor(addedMinutes * 60);
+                        
+                        let endSeconds = parseTime(cdData.end);
+                        endSeconds += addedSeconds;
+                        
+                        // Kiểm tra giới hạn (limit)
+                        if (cdData.limit && cdData.limit.trim() !== "") {
+                            let limitSeconds = parseTime(cdData.limit);
+                            if (endSeconds > limitSeconds) {
+                                endSeconds = limitSeconds;
+                            }
+                        }
+                        
+                        cdData.end = formatTime(endSeconds);
                         
                         // Lưu lại file
                         fs.writeFileSync(cdPath, JSON.stringify(cdData, null, 2), 'utf8');
                         // Báo cho Frontend
                         req.io.emit('update_countdown', cdData);
-                        console.log(`[Webhook] Đã cộng thêm ${incrementMinutes} phút vào Countdown!`);
+                        console.log(`[Webhook] Đã cộng thêm ${addedMinutes.toFixed(2)} phút vào Countdown! (End mới: ${cdData.end})`);
                     }
                 }
             } catch (err) {

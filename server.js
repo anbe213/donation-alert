@@ -66,7 +66,12 @@ io.on('connection', (socket) => {
             const fs = require('fs');
             const cdPath = path.join(__dirname, 'public/countdown/countdown.json');
             if (fs.existsSync(cdPath)) {
-                const cdData = JSON.parse(fs.readFileSync(cdPath, 'utf8'));
+                let cdData = JSON.parse(fs.readFileSync(cdPath, 'utf8'));
+                // Nếu chưa có thời gian bắt đầu thực tế, hãy gán lúc này
+                if (!cdData.real_start_time || cdData.real_start_time.trim() === "") {
+                    cdData.real_start_time = new Date().toISOString();
+                    fs.writeFileSync(cdPath, JSON.stringify(cdData, null, 2), 'utf8');
+                }
                 socket.emit('update_countdown', cdData);
             }
         } catch (e) {
