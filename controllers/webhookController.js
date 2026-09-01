@@ -167,7 +167,7 @@ const handleWebhook = async (req, res) => {
                     console.log("[AI Parsing] Đang gửi yêu cầu lên Groq API (Llama 3.1 70B)...");
                     const prompt = `Bạn là một trợ lý ảo chuyên trích xuất dữ liệu giao dịch ngân hàng.
 Nhiệm vụ của bạn: Đọc chuỗi 'description' từ ngân hàng, trích xuất 'Tên người gửi' và 'Nội dung chuyển khoản'.
-Bạn phải khôi phục dấu tiếng Việt cho tên và nội dung sao cho hợp lý nhất theo ngữ cảnh. Loại bỏ tất cả các mã giao dịch, số điện thoại, chữ rác của hệ thống (như 'NHAN TU', 'TRACE', 'ND', 'chuyen tien den', 'qua MoMo', 'FT...'). Nếu nội dung chỉ chứa tên người gửi và mã rác, hãy để nội dung là rỗng.
+Bạn phải khôi phục dấu tiếng Việt cho tên và nội dung sao cho hợp lý nhất theo ngữ cảnh. Loại bỏ tất cả các mã giao dịch, số điện thoại, chữ rác của hệ thống (như 'NHAN TU', 'TRACE', 'ND', 'qua MoMo', 'FT...'). Lưu ý, phía sau 'ND' thường ngay lập tức sẽ là nội dung chuyển khoản, tuy nhiên nội dung chuyển khoản sẽ không kéo dài đến hết chuỗi mà sẽ dừng lại ở giữa rồi ngay sau đó sẽ tiếp tục là chữ rác của hệ thống. Nếu nội dung chỉ chứa tên người gửi và mã rác, hãy để nội dung là rỗng.
 CHỈ trả về định dạng JSON duy nhất, không giải thích gì thêm:
 { "sender_name": "Tên Đã Có Dấu", "message": "Nội dung đã có dấu" }
 
