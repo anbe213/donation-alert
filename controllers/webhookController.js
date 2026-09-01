@@ -180,7 +180,7 @@ Description: "${desc}"`;
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            model: 'llama-3.1-70b-versatile',
+                            model: process.env.GROQ_MODEL || 'qwen-3.8-27b',
                             messages: [{ role: 'user', content: prompt }],
                             response_format: { type: 'json_object' },
                             temperature: 0.1
