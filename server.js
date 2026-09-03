@@ -30,11 +30,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// Thêm bộ ghi log để debug mọi request bay tới máy chủ
-app.use((req, res, next) => {
-    console.log(`[Network] Có request bay tới: ${req.method} ${req.url}`);
-    next();
-});
+// Đã xóa bộ ghi log debug mọi request để tránh rác console
 
 // Phục vụ file tĩnh cho Frontend
 app.use(express.static(path.join(__dirname, 'public')));
