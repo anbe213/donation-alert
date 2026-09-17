@@ -19,7 +19,6 @@ const alertImage = document.getElementById('alert-image');
 let alertQueue = [];
 let isPlaying = false;
 let currentTtsAudio = null;
-let currentUtterance = null;
 let currentWatchdog = null;
 
 // Format số tiền VNĐ
@@ -37,12 +36,6 @@ function stopCurrentAudio() {
             currentTtsAudio.onerror = null;
         } catch (e) {}
         currentTtsAudio = null;
-    }
-    if ('speechSynthesis' in window) {
-        try {
-            window.speechSynthesis.cancel();
-        } catch (e) {}
-        currentUtterance = null;
     }
 }
 
@@ -205,44 +198,8 @@ function playNextAlert() {
             tryFinishAlert();
         });
 
-    } else if (data.fallback_text && 'speechSynthesis' in window) {
-        // Dự phòng: Nếu VieNeu bị lỗi, phát giọng Tiếng Việt của trình duyệt
-        try {
-            const utterance = new SpeechSynthesisUtterance(data.fallback_text);
-            utterance.lang = 'vi-VN'; // Luôn dùng Tiếng Việt
-            utterance.rate = 1.0;
-            currentUtterance = utterance;
-
-            // Tìm giọng Tiếng Việt trong hệ điều hành nếu có
-            if (typeof window.speechSynthesis.getVoices === 'function') {
-                const voices = window.speechSynthesis.getVoices();
-                const viVoice = voices.find(v => (v.lang && v.lang.toLowerCase().includes('vi')) || (v.name && v.name.toLowerCase().includes('vietnam')));
-                if (viVoice) utterance.voice = viVoice;
-            }
-
-            utterance.onend = () => {
-                isTtsFinished = true;
-                currentUtterance = null;
-                tryFinishAlert();
-            };
-
-            utterance.onerror = (err) => {
-                console.warn('[Alert] Lỗi SpeechSynthesis:', err);
-                isTtsFinished = true;
-                currentUtterance = null;
-                tryFinishAlert();
-            };
-
-            window.speechSynthesis.speak(utterance);
-        } catch (e) {
-            console.warn('[Alert] Lỗi SpeechSynthesis:', e.message);
-            alertMessage.innerText = "[LỖI ÂM THANH]: " + e.message;
-            isTtsFinished = true;
-            currentUtterance = null;
-            tryFinishAlert();
-        }
     } else {
-        // Không có file âm thanh hoặc tin nhắn rỗng
+        // Không có file âm thanh
         isTtsFinished = true;
         tryFinishAlert();
     }

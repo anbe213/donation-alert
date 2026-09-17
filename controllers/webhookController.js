@@ -246,25 +246,22 @@ Description: "${desc}"`;
         // Loại bỏ các thẻ trong ngoặc vuông (như [cười khẩy], [thở dài]) để bot không tự diễn
         const msgStr = (donationInfo.description || "").replace(/\[.*?\]/g, '').trim();
 
-        // Tạo nội dung đọc Tiếng Việt
-        let fullTextVi = "";
-        if (msgStr && msgStr !== 'Không có lời nhắn' && msgStr.trim() !== '') {
-            fullTextVi = ttsViTemplate
-                .replace('{name}', nameStr)
-                .replace('{amount}', amountStrVi)
-                .replace('{message}', msgStr);
-        } else {
-            // Khi không có lời nhắn riêng, đọc câu thông báo gọn gàng, tự nhiên
-            fullTextVi = ttsViTemplate
-                .replace(/\s*(với\s*lời\s*nhắn|với\s*nội\s*dung)?\s*\{message\}/gi, '')
-                .replace('{name}', nameStr)
-                .replace('{amount}', amountStrVi)
-                .trim();
-            if (!fullTextVi.endsWith('.')) fullTextVi += '.';
-        }
+        // 1. Mẫu câu ngắn gọn: Cắt bỏ phần "với lời nhắn {message}" ở đằng sau
+        const textWithoutMsg = ttsViTemplate
+            .replace(/\s*(với\s*lời\s*nhắn|với\s*nội\s*dung)?\s*\{message\}/gi, '')
+            .replace('{name}', nameStr)
+            .replace('{amount}', amountStrVi)
+            .trim();
 
-        // Luôn luôn dùng Tiếng Việt làm dự phòng, tuyệt đối không dùng tiếng Anh
-        donationInfo.fallback_text = fullTextVi;
+        // 2. Mẫu câu đầy đủ có kèm lời nhắn
+        const textWithMsg = ttsViTemplate
+            .replace('{name}', nameStr)
+            .replace('{amount}', amountStrVi)
+            .replace('{message}', msgStr);
+
+        const hasValidMessage = Boolean(msgStr && msgStr !== 'Không có lời nhắn' && msgStr.trim() !== '');
+        const primaryText = hasValidMessage ? textWithMsg : textWithoutMsg;
+        const safePrimaryText = primaryText.replace(/["\r\n]/g, ' ').replace(/\s+/g, ' ').trim();
         
         // --- Dọn dẹp các file âm thanh cũ (rác) ---
         const assetsDir = path.join(__dirname, '../public/alert/assets');
@@ -293,33 +290,49 @@ Description: "${desc}"`;
         donationInfo.rain_density = rainDensity;
 
         // --- Tích hợp AI Text-To-Speech (VieNeu-TTS) ---
-        // Luôn luôn sinh giọng đọc offline Tiếng Việt cho mọi giao dịch donate hợp lệ
+        // Luôn luôn dùng giọng VieNeu-TTS nội bộ của project
         if (enableVieneu && donationInfo.amount > 0) {
             try {
                 const { spawnSync } = require('child_process');
                 const fileName = `tts_${Date.now()}.wav`;
                 const outputFilePath = path.join(__dirname, '../public/alert/assets', fileName);
                 
-                // Chuẩn hoá text loại bỏ ngoặc kép hoặc xuống dòng để truyền an toàn
-                const safeText = fullTextVi.replace(/["\r\n]/g, ' ').replace(/\s+/g, ' ').trim();
-                console.log(`[VieNeu-TTS] Đang gọi Python sinh giọng đọc offline: "${safeText}" (Giọng: ${vieneuVoice})`);
+                console.log(`[VieNeu-TTS] Đang gọi Python sinh giọng đọc offline: "${safePrimaryText}" (Giọng: ${vieneuVoice})`);
 
-                const pyResult = spawnSync('python', [
+                let pyResult = spawnSync('python', [
                     'tts_worker.py',
-                    '--text', safeText,
+                    '--text', safePrimaryText,
                     '--output', outputFilePath,
                     '--voice', vieneuVoice
                 ], {
                     cwd: path.join(__dirname, '..'), // Chạy ở thư mục gốc project
                     encoding: 'utf8',
-                    timeout: 20000 // Giới hạn tối đa 20s
+                    timeout: 25000 // Giới hạn tối đa 25s
                 });
+
+                // Nếu sinh giọng có kèm lời nhắn bị lỗi (do ký tự lạ, lỗi suy luận mô hình...),
+                // tự động chuyển sang đọc mẫu câu chuẩn bỏ lời nhắn: "{name} đã ném vào mặt bạn {amount} đồng"
+                if ((pyResult.status !== 0 || !fs.existsSync(outputFilePath)) && hasValidMessage) {
+                    const safeFallbackText = textWithoutMsg.replace(/["\r\n]/g, ' ').replace(/\s+/g, ' ').trim();
+                    console.warn(`[VieNeu-TTS] Lỗi khi sinh giọng có lời nhắn. Tự động thử lại bằng VieNeu với mẫu câu bỏ lời nhắn: "${safeFallbackText}"`);
+
+                    pyResult = spawnSync('python', [
+                        'tts_worker.py',
+                        '--text', safeFallbackText,
+                        '--output', outputFilePath,
+                        '--voice', vieneuVoice
+                    ], {
+                        cwd: path.join(__dirname, '..'),
+                        encoding: 'utf8',
+                        timeout: 20000
+                    });
+                }
                 
                 if (pyResult.status === 0 && fs.existsSync(outputFilePath)) {
                     console.log(`[VieNeu-TTS] Tạo thành công! File: ${fileName}`);
                     donationInfo.local_tts_url = `assets/${fileName}`;
                 } else {
-                    console.error(`[VieNeu-TTS] Python lỗi (mã thoát ${pyResult.status}):`, pyResult.stderr || pyResult.stdout || pyResult.error?.message);
+                    console.error(`[VieNeu-TTS] Không thể sinh âm thanh VieNeu (mã lỗi ${pyResult.status}):`, pyResult.stderr || pyResult.stdout || pyResult.error?.message);
                 }
             } catch (err) {
                 console.error('[VieNeu-TTS] Ngoại lệ khi gọi sinh giọng đọc:', err.message);
