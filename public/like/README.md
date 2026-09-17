@@ -22,7 +22,7 @@ Mở file `public/like/like.json` bằng Notepad để điều chỉnh các thô
 
 ```json
 {
-  "title": "MỤC TIÊU LIKE",
+  "title": "SỐ LIKE",
   "current": 0,
   "target": 100,
   "youtube_video_id": "jfKfPfyJRdk",
@@ -30,11 +30,15 @@ Mở file `public/like/like.json` bằng Notepad để điều chỉnh các thô
 }
 ```
 
-- **`title`**: Tiêu đề hiển thị phía trên số like (Mặc định: `"MỤC TIÊU LIKE"`).
+- **`title`**: Tiêu đề hiển thị phía trên số like (Mặc định: `"SỐ LIKE"`).
 - **`current`**: Số like hiện tại. Hệ thống sẽ tự động cập nhật số này từ YouTube Live hoặc bạn có thể chỉnh tay số khởi đầu.
 - **`target`**: Mục tiêu số like bạn mong muốn đạt được (Ví dụ: `100` hoặc `500`).
-- **`youtube_video_id`**: Mã Video ID của buổi livestream trên YouTube.
-  - *Cách lấy ID:* Nếu link livestream của bạn là `https://www.youtube.com/watch?v=jfKfPfyJRdk` thì Video ID là **`jfKfPfyJRdk`**.
+- **`youtube_video_id`**: Mã Video ID hoặc toàn bộ đường link buổi stream trên YouTube.
+  - *Hỗ trợ nhập trực tiếp bất kỳ định dạng link YouTube nào, hệ thống tự động nhận diện:*
+    1. Dạng thông thường trên trình duyệt: `https://www.youtube.com/watch?v=jfKfPfyJRdk` ➔ Video ID là **`jfKfPfyJRdk`** (chuỗi sau `v=`).
+    2. Dạng link chia sẻ rút gọn: `https://youtu.be/jfKfPfyJRdk` ➔ Video ID là **`jfKfPfyJRdk`**.
+    3. Dạng link YouTube Live: `https://www.youtube.com/live/jfKfPfyJRdk` ➔ Video ID là **`jfKfPfyJRdk`**.
+    4. *Mẹo:* Bạn có thể dán nguyên cả link (ví dụ `"https://www.youtube.com/watch?v=jfKfPfyJRdk"`) hoặc chỉ chuỗi 11 ký tự `"jfKfPfyJRdk"` vào `youtube_video_id` đều được!
   - *Nếu để trống `""`:* Hệ thống sẽ chạy ở chế độ thủ công (bạn có thể tự sửa số `current` hoặc dùng link test bên dưới).
 - **`poll_interval_seconds`**: Thời gian giữa mỗi lần quét số like trên YouTube (Mặc định: `15` giây).
 

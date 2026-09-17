@@ -91,7 +91,7 @@ function updateDisplay(current, target, animate) {
     // Kích hoạt hiệu ứng ăn mừng khi đạt 100%
     if (percentage >= 100) {
         widgetWrapper.classList.add('goal-reached');
-        likePercentBadge.innerText = "🎉 HOÀN THÀNH MỤC TIÊU!";
+        likePercentBadge.innerText = "🎉 HOÀN THÀNH!";
     } else {
         widgetWrapper.classList.remove('goal-reached');
     }

@@ -228,6 +228,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
     letter-spacing: 1px;
+    white-space: nowrap;
 }
 
 /* Hiệu ứng khi hoàn thành 100% Goal */

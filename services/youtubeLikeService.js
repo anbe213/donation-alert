@@ -14,12 +14,26 @@ function getLikeConfig() {
         console.error('[LikeService] Lỗi đọc like.json:', e.message);
     }
     return {
-        title: "MỤC TIÊU LIKE",
+        title: "SỐ LIKE",
         current: 0,
         target: 100,
         youtube_video_id: "",
         poll_interval_seconds: 15
     };
+}
+
+// Trích xuất video ID 11 ký tự từ link YouTube bất kỳ hoặc chuỗi ID
+function extractVideoId(input) {
+    if (!input || typeof input !== 'string') return '';
+    const trimmed = input.trim();
+    if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
+        return trimmed;
+    }
+    const matchWatch = trimmed.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+    if (matchWatch) return matchWatch[1];
+    const matchSlash = trimmed.match(/(?:youtu\.be\/|youtube\.com\/(?:live|embed|v|shorts)\/)([a-zA-Z0-9_-]{11})/);
+    if (matchSlash) return matchSlash[1];
+    return trimmed;
 }
 
 // Hàm ghi file cấu hình like.json
@@ -32,7 +46,8 @@ function saveLikeConfig(config) {
 }
 
 // Hàm lấy số Like từ YouTube
-async function fetchYouTubeLikes(videoId) {
+async function fetchYouTubeLikes(rawInput) {
+    const videoId = extractVideoId(rawInput);
     if (!videoId || videoId.trim() === '') return null;
 
     const trimmedId = videoId.trim();
