@@ -60,6 +60,16 @@ const handleWebhook = async (req, res) => {
         const path = require('path');
         let enableAiParsing = false;
         let groqApiKey = process.env.GROQ_API_KEY || '';
+        let showLog = true;
+        let ttsViTemplate = "{name} đã ném vào mặt bạn {amount} đồng với lời nhắn {message}";
+        let ttsEnTemplate = "{name} sent you {amount} with message {message}";
+        let enableVieneu = true;
+        let vieneuVoice = "Ngọc Trân";
+        let rainDensity = 1;
+        let rainTiers = { tier1_min: 0, tier2_min: 20000, tier3_min: 50000, tier4_min: 100000 };
+        let minDisplayTime = 7;
+        let delayBetweenAlerts = 2;
+        let ttsDelay = 2.5;
         
         try {
             const configPath = path.join(__dirname, '../public/alert/config.json');
@@ -73,6 +83,9 @@ const handleWebhook = async (req, res) => {
             if (configData.vieneu_voice) vieneuVoice = configData.vieneu_voice;
             if (configData.rain_density !== undefined) rainDensity = configData.rain_density;
             if (configData.rain_tiers) rainTiers = configData.rain_tiers;
+            if (configData.min_display_time !== undefined) minDisplayTime = configData.min_display_time;
+            if (configData.delay_between_alerts !== undefined) delayBetweenAlerts = configData.delay_between_alerts;
+            if (configData.tts_delay !== undefined) ttsDelay = configData.tts_delay;
             
             // Cấu hình AI
             if (configData.enable_ai_parsing !== undefined) enableAiParsing = configData.enable_ai_parsing;
@@ -276,6 +289,9 @@ Description: "${desc}"`;
         else if (donationInfo.amount >= rainTiers.tier2_min) rainItem = 2;
         donationInfo.rain_item = rainItem;
         donationInfo.rain_density = rainDensity;
+        donationInfo.min_display_time = minDisplayTime;
+        donationInfo.delay_between_alerts = delayBetweenAlerts;
+        donationInfo.tts_delay = ttsDelay;
 
         // --- Tích hợp AI Text-To-Speech (VieNeu-TTS) ---
         if (enableVieneu && donationInfo.amount > 0 && donationInfo.description && donationInfo.description !== 'Không có lời nhắn') {

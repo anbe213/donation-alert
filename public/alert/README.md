@@ -14,6 +14,9 @@ File `config.json` nằm trong thư mục này dùng để tùy chỉnh cách th
   - `{message}`: Sẽ tự động được thay bằng nội dung lời nhắn.
 - `tts_english`: (Chuỗi ký tự) Mẫu câu đọc tiếng Anh dự phòng (Thường ít dùng tới nếu bạn stream cho người Việt).
 - `rain_density`: (Số nguyên) Mật độ đồng tiền rơi xuống trên màn hình alert khi có người donate. Số càng to thì mưa tiền càng dày đặc.
+- `min_display_time`: (Số giây) Thời gian tối thiểu một thông báo hiển thị trên màn hình (Mặc định: `7` giây). Nếu lời nhắn ngắn hoặc không có TTS, thông báo vẫn sẽ ở lại đủ số giây này để người xem kịp đọc chữ.
+- `delay_between_alerts`: (Số giây) Thời gian nghỉ giữa 2 lần hiển thị donate liên tiếp trong hàng đợi (Mặc định: `2` giây). Đảm bảo giọng đọc donate trước kết thúc hoàn toàn mới bắt đầu donate sau, triệt tiêu hoàn toàn hiện tượng 2 donate đè tiếng lên nhau.
+- `tts_delay`: (Số giây) Thời gian chờ sau khi thông báo hiện lên (và chuông reo) rồi mới bắt đầu đọc lời nhắn (Mặc định: `2.5` giây).
 - `rain_tiers`: (Object) Các mốc tiền kích hoạt số lượng mưa tiền khác nhau:
   - `tier1_min`: Số tiền tối thiểu để kích hoạt mốc mưa tiền 1 (Mặc định: 0 VNĐ).
   - `tier2_min`: Số tiền tối thiểu để kích hoạt mốc mưa tiền 2 (Mặc định: 20,000 VNĐ).

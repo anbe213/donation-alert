@@ -7,6 +7,9 @@
   "tts_vietnamese": "{name} đã ném vào mặt bạn {amount} đồng với lời nhắn {message}",
   "tts_english": "{name} sent you {amount} with message {message}",
   "rain_density": 2,
+  "min_display_time": 7,
+  "delay_between_alerts": 2,
+  "tts_delay": 2.5,
   "rain_tiers": {
     "tier1_min": 0,
     "tier2_min": 20000,
