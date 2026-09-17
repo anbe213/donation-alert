@@ -86,10 +86,9 @@ function playNextAlert() {
     // Lấy người donate đầu tiên trong hàng đợi
     const data = alertQueue.shift();
 
-    // Các mốc thời gian cấu hình (chuyển sang mili-giây)
-    const minDisplayTime = (typeof data.min_display_time === 'number' ? data.min_display_time : 7) * 1000;
-    const delayBetweenAlerts = (typeof data.delay_between_alerts === 'number' ? data.delay_between_alerts : 2) * 1000;
-    const ttsDelay = (typeof data.tts_delay === 'number' ? data.tts_delay : 2.5) * 1000;
+    // Cố định thời gian hiển thị tối thiểu 7s và khoảng nghỉ 2s giữa các donate trong hàng đợi
+    const MIN_DISPLAY_TIME = 7000;
+    const DELAY_BETWEEN_ALERTS = 2000;
 
     // Cập nhật giao diện
     alertName.innerText = `${data.account_no} vừa donate!`;
@@ -133,15 +132,6 @@ function playNextAlert() {
         }
     }, 50);
 
-    // Phát âm thanh chuông thông báo mặc định ngay lập tức
-    alertSound.currentTime = 0; // Tua lại từ đầu
-    alertSound.play().catch(e => {
-        // Trình duyệt chặn âm thanh, hiển thị cảnh báo lên màn hình
-        if (e.name === 'NotAllowedError') {
-            alertMessage.innerText = "[TRÌNH DUYỆT BỊ TẮT TIẾNG: Hãy click chuột 1 lần vào trang web này!]";
-        }
-    });
-
     // Quản lý điều kiện để kết thúc thông báo hiện tại
     let isTtsFinished = false;
     let isMinTimeElapsed = false;
@@ -171,10 +161,10 @@ function playNextAlert() {
                     rainContainer.innerHTML = '';
                     stopCurrentAudio();
 
-                    // Nghỉ một khoảng delay_between_alerts rồi mới phát donate tiếp theo trong hàng đợi
+                    // Nghỉ một khoảng DELAY_BETWEEN_ALERTS (2s) rồi mới phát donate tiếp theo trong hàng đợi
                     setTimeout(() => {
                         playNextAlert();
-                    }, delayBetweenAlerts);
+                    }, DELAY_BETWEEN_ALERTS);
 
                 }, 500);
 
@@ -182,75 +172,73 @@ function playNextAlert() {
         }
     };
 
-    // Điều kiện 1: Đếm ngược thời gian hiển thị tối thiểu
+    // Điều kiện 1: Đếm ngược thời gian hiển thị tối thiểu (7s)
     setTimeout(() => {
         isMinTimeElapsed = true;
         tryFinishAlert();
-    }, minDisplayTime);
+    }, MIN_DISPLAY_TIME);
 
-    // Điều kiện 2: Bắt đầu phát giọng đọc sau ttsDelay (chờ tiếng chuông ting-ting phát xong)
-    setTimeout(() => {
-        if (data.local_tts_url) {
-            // Ưu tiên 1: Phát giọng VieNeu-TTS (Offline)
-            const localAudio = new Audio(data.local_tts_url);
-            currentTtsAudio = localAudio;
+    // Điều kiện 2: Bắt đầu phát giọng đọc ngay lập tức (không cần chờ chuông)
+    if (data.local_tts_url) {
+        // Ưu tiên 1: Phát giọng VieNeu-TTS (Offline)
+        const localAudio = new Audio(data.local_tts_url);
+        currentTtsAudio = localAudio;
 
-            localAudio.onended = () => {
-                isTtsFinished = true;
-                currentTtsAudio = null;
-                tryFinishAlert();
-            };
+        localAudio.onended = () => {
+            isTtsFinished = true;
+            currentTtsAudio = null;
+            tryFinishAlert();
+        };
 
-            localAudio.onerror = (err) => {
-                console.warn('[Alert] Lỗi phát âm thanh local_tts:', err);
-                isTtsFinished = true;
-                currentTtsAudio = null;
-                tryFinishAlert();
-            };
+        localAudio.onerror = (err) => {
+            console.warn('[Alert] Lỗi phát âm thanh local_tts:', err);
+            isTtsFinished = true;
+            currentTtsAudio = null;
+            tryFinishAlert();
+        };
 
-            localAudio.play().catch(e => {
-                console.warn('[Alert] Không thể phát âm thanh TTS:', e.message);
-                alertMessage.innerText = "[LỖI ÂM THANH OFFLINE]: " + e.message;
-                isTtsFinished = true;
-                currentTtsAudio = null;
-                tryFinishAlert();
-            });
+        localAudio.play().catch(e => {
+            console.warn('[Alert] Không thể phát âm thanh TTS:', e.message);
+            alertMessage.innerText = "[LỖI ÂM THANH OFFLINE]: " + e.message;
+            isTtsFinished = true;
+            currentTtsAudio = null;
+            tryFinishAlert();
+        });
 
-        } else if (data.fallback_text && 'speechSynthesis' in window) {
-            // Backup: Phát giọng lơ lớ mặc định nếu VieNeu bị lỗi hoặc tắt
-            try {
-                const utterance = new SpeechSynthesisUtterance(data.fallback_text);
-                utterance.lang = 'en-US'; // Ép đọc giọng Tiếng Anh
-                utterance.rate = 1.0;
-                currentUtterance = utterance;
+    } else if (data.fallback_text && 'speechSynthesis' in window) {
+        // Backup: Phát giọng lơ lớ mặc định nếu VieNeu bị lỗi hoặc tắt
+        try {
+            const utterance = new SpeechSynthesisUtterance(data.fallback_text);
+            utterance.lang = 'en-US'; // Ép đọc giọng Tiếng Anh
+            utterance.rate = 1.0;
+            currentUtterance = utterance;
 
-                utterance.onend = () => {
-                    isTtsFinished = true;
-                    currentUtterance = null;
-                    tryFinishAlert();
-                };
-
-                utterance.onerror = (err) => {
-                    console.warn('[Alert] Lỗi SpeechSynthesis:', err);
-                    isTtsFinished = true;
-                    currentUtterance = null;
-                    tryFinishAlert();
-                };
-
-                window.speechSynthesis.speak(utterance);
-            } catch (e) {
-                console.warn('[Alert] Lỗi SpeechSynthesis:', e.message);
-                alertMessage.innerText = "[LỖI ÂM THANH]: " + e.message;
+            utterance.onend = () => {
                 isTtsFinished = true;
                 currentUtterance = null;
                 tryFinishAlert();
-            }
-        } else {
-            // Không có file âm thanh hoặc tin nhắn rỗng
+            };
+
+            utterance.onerror = (err) => {
+                console.warn('[Alert] Lỗi SpeechSynthesis:', err);
+                isTtsFinished = true;
+                currentUtterance = null;
+                tryFinishAlert();
+            };
+
+            window.speechSynthesis.speak(utterance);
+        } catch (e) {
+            console.warn('[Alert] Lỗi SpeechSynthesis:', e.message);
+            alertMessage.innerText = "[LỖI ÂM THANH]: " + e.message;
             isTtsFinished = true;
+            currentUtterance = null;
             tryFinishAlert();
         }
-    }, ttsDelay);
+    } else {
+        // Không có file âm thanh hoặc tin nhắn rỗng
+        isTtsFinished = true;
+        tryFinishAlert();
+    }
 
     // Watchdog an toàn: Nếu sau 40s âm thanh bị treo bất thường thì tự động giải phóng hàng đợi
     currentWatchdog = setTimeout(() => {
