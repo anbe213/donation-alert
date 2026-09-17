@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Like Goal Widget</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="like-widget-wrapper">
+        <!-- Vùng chứa các giọt nước rơi từ trên xuống -->
+        <div id="droplets-container"></div>
+
+        <!-- Chiếc bình thủy tinh ma thuật -->
+        <div id="jar-container">
+            <!-- Khung bình thủy tinh SVG viền đồng giả cổ -->
+            <svg id="jar-svg" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Nắp gỗ / đồng miệng bình -->
+                <rect x="48" y="10" width="64" height="14" rx="4" fill="#603014" stroke="#c28835" stroke-width="2.5"/>
+                <rect x="58" y="4" width="44" height="8" rx="2" fill="#82461d" stroke="#d49b42" stroke-width="1.5"/>
+                <!-- Miệng bình -->
+                <ellipse cx="80" cy="24" rx="28" ry="6" fill="#1b120c" stroke="#c28835" stroke-width="2"/>
+                <!-- Thân bình thủy tinh -->
+                <path d="M 54 24 L 54 48 L 24 92 C 8 116 8 184 26 202 C 44 218 116 218 134 202 C 152 184 152 116 136 92 L 106 48 L 106 24 Z" 
+                      fill="rgba(255, 255, 255, 0.04)" 
+                      stroke="#a36e2c" 
+                      stroke-width="4"/>
+                <!-- Vệt phản quang ánh sáng trên kính -->
+                <path d="M 30 105 C 22 130 22 172 36 192" 
+                      stroke="rgba(255, 255, 255, 0.35)" 
+                      stroke-width="3.5" 
+                      stroke-linecap="round"/>
+                <path d="M 42 115 C 38 132 38 160 46 175" 
+                      stroke="rgba(255, 255, 255, 0.15)" 
+                      stroke-width="2" 
+                      stroke-linecap="round"/>
+            </svg>
+
+            <!-- Lớp dung dịch nước xanh biển pha lê ma thuật -->
+            <div id="liquid-wrapper">
+                <div id="liquid-body">
+                    <!-- Bề mặt sóng nước ma thuật -->
+                    <div id="liquid-surface">
+                        <div class="wave wave1"></div>
+                        <div class="wave wave2"></div>
+                    </div>
+                    <!-- Hiệu ứng bọt khí ma thuật bay lơ lửng -->
+                    <div class="bubble b1"></div>
+                    <div class="bubble b2"></div>
+                    <div class="bubble b3"></div>
+                </div>
+            </div>
+
+            <!-- Vùng bắn tia sáng/gợn nước khi giọt nước chạm mặt -->
+            <div id="splash-container"></div>
+        </div>
+
+        <!-- Bảng hiển thị thông số và tiến trình (Phong cách Medieval Fantasy) -->
+        <div id="like-text-box">
+            <div id="like-title">MỤC TIÊU LIKE</div>
+            <div id="like-counter">
+                <span id="like-current">0</span> <span class="divider">/</span> <span id="like-target">100</span>
+            </div>
+            <div id="like-percent-badge">0% HOÀN THÀNH</div>
+        </div>
+    </div>
+
+    <!-- Script kết nối Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -38,6 +38,41 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Định tuyến API Webhook
 app.post('/api/apibank/webhook', webhookController.handleWebhook);
 
+// API Test nhanh hiệu ứng Like Goal
+app.get('/api/like/test', (req, res) => {
+    try {
+        const likeService = require('./services/youtubeLikeService');
+        const config = likeService.getLikeConfig();
+        
+        if (req.query.reset !== undefined) {
+            config.current = parseInt(req.query.reset, 10) || 0;
+            likeService.saveLikeConfig(config);
+            io.emit('update_like', {
+                current: config.current,
+                target: config.target,
+                delta: 0,
+                title: config.title
+            });
+            return res.send(`Đã reset Like về: ${config.current}`);
+        }
+
+        const delta = parseInt(req.query.delta, 10) || 1;
+        config.current = (config.current || 0) + delta;
+        likeService.saveLikeConfig(config);
+
+        io.emit('update_like', {
+            current: config.current,
+            target: config.target,
+            delta: delta,
+            title: config.title
+        });
+
+        res.send(`Đã cộng thêm +${delta} Like! Tổng hiện tại: ${config.current}/${config.target}`);
+    } catch (err) {
+        res.status(500).send('Lỗi: ' + err.message);
+    }
+});
+
 // Socket.io kết nối
 io.on('connection', (socket) => {
     console.log('[Socket] Một client OBS (Frontend) vừa kết nối.');
@@ -74,10 +109,34 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Gửi trạng thái Like Goal khi có client yêu cầu
+    socket.on('request_like_init', () => {
+        try {
+            const likeService = require('./services/youtubeLikeService');
+            const config = likeService.getLikeConfig();
+            socket.emit('update_like', {
+                current: config.current,
+                target: config.target,
+                delta: 0,
+                title: config.title
+            });
+        } catch (e) {
+            console.error('[Socket] Lỗi đọc like.json:', e.message);
+        }
+    });
+
     socket.on('disconnect', () => {
         console.log('[Socket] Client OBS đã ngắt kết nối.');
     });
 });
+
+// --- Khởi tạo dịch vụ quét Like YouTube định kỳ ---
+try {
+    const likeService = require('./services/youtubeLikeService');
+    likeService.startLikePoller(io);
+} catch (e) {
+    console.error('❌ Lỗi khởi động dịch vụ Like:', e.message);
+}
 
 // --- Khởi tạo và Tick tự động cho Subathon Countdown ---
 try {
@@ -132,7 +191,10 @@ try {
 server.listen(PORT, async () => {
     console.log(`\n===========================================`);
     console.log(`🚀 Server đang chạy tại: http://localhost:${PORT}`);
-    console.log(`🔗 Cài vào OBS Browser Source: http://localhost:${PORT}/alert/index.html`);
+    console.log(`🔗 Alert:     http://localhost:${PORT}/alert/index.html`);
+    console.log(`🔗 Goal:      http://localhost:${PORT}/goal/index.html`);
+    console.log(`🔗 Countdown: http://localhost:${PORT}/countdown/index.html`);
+    console.log(`🔗 Like Goal: http://localhost:${PORT}/like/index.html`);
     console.log(`===========================================\n`);
 
     // Kiểm tra kết nối Groq API
