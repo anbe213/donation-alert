@@ -206,12 +206,19 @@ function playNextAlert() {
         });
 
     } else if (data.fallback_text && 'speechSynthesis' in window) {
-        // Backup: Phát giọng lơ lớ mặc định nếu VieNeu bị lỗi hoặc tắt
+        // Dự phòng: Nếu VieNeu bị lỗi, phát giọng Tiếng Việt của trình duyệt
         try {
             const utterance = new SpeechSynthesisUtterance(data.fallback_text);
-            utterance.lang = 'en-US'; // Ép đọc giọng Tiếng Anh
+            utterance.lang = 'vi-VN'; // Luôn dùng Tiếng Việt
             utterance.rate = 1.0;
             currentUtterance = utterance;
+
+            // Tìm giọng Tiếng Việt trong hệ điều hành nếu có
+            if (typeof window.speechSynthesis.getVoices === 'function') {
+                const voices = window.speechSynthesis.getVoices();
+                const viVoice = voices.find(v => (v.lang && v.lang.toLowerCase().includes('vi')) || (v.name && v.name.toLowerCase().includes('vietnam')));
+                if (viVoice) utterance.voice = viVoice;
+            }
 
             utterance.onend = () => {
                 isTtsFinished = true;
