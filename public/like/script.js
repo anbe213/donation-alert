@@ -1,9 +1,12 @@
 const socket = io();
 
 // Element references
-const liquidBody = document.getElementById('liquid-body');
+const svgLiquidBody = document.getElementById('svg-liquid-body');
+const svgWaveGroup = document.getElementById('svg-wave-group');
+const svgLiquidGlow = document.getElementById('svg-liquid-glow');
+const svgBubbles = document.getElementById('svg-bubbles');
+const jarContainer = document.getElementById('jar-container');
 const dropletsContainer = document.getElementById('droplets-container');
-const splashContainer = document.getElementById('splash-container');
 const likeTitle = document.getElementById('like-title');
 const likeCurrent = document.getElementById('like-current');
 const likeTarget = document.getElementById('like-target');
@@ -13,6 +16,11 @@ const widgetWrapper = document.getElementById('like-widget-wrapper');
 let previousLikes = null;
 let currentLikes = 0;
 let targetLikes = 100;
+let currentAnimatedPercent = 0;
+let liquidAnimFrame = null;
+
+// Khởi tạo mức nước ban đầu ở 0%
+applyLiquidLevel(0);
 
 // Khi vừa kết nối tới Server, yêu cầu gửi dữ liệu Like ban đầu
 socket.on('connect', () => {
@@ -68,11 +76,14 @@ function handleLikeUpdate(data) {
 function updateDisplay(current, target, animate) {
     const percentage = Math.min(100, Math.max(0, (current / target) * 100));
 
-    // Nâng mực dung dịch
-    liquidBody.style.height = `${percentage}%`;
-
-    // Cập nhật số đếm với hiệu ứng mượt
-    animateCounter(parseInt(likeCurrent.innerText.replace(/,/g, '')) || 0, current, 800);
+    if (animate) {
+        animateLiquidLevel(currentAnimatedPercent, percentage, 800);
+        animateCounter(parseInt(likeCurrent.innerText.replace(/,/g, '')) || 0, current, 800);
+    } else {
+        currentAnimatedPercent = percentage;
+        applyLiquidLevel(percentage);
+        likeCurrent.innerText = current.toLocaleString('vi-VN');
+    }
 
     // Cập nhật huy hiệu %
     likePercentBadge.innerText = `${Math.round(percentage)}% HOÀN THÀNH`;
@@ -84,6 +95,70 @@ function updateDisplay(current, target, animate) {
     } else {
         widgetWrapper.classList.remove('goal-reached');
     }
+}
+
+// Áp dụng mực dung dịch trong bình SVG (0% -> 100%)
+// Tọa độ bình: Đáy là Y=218, Đỉnh chất lỏng tối đa là Y=36 (chiều cao = 182px)
+function applyLiquidLevel(percent) {
+    const maxH = 182;
+    const bottomY = 218;
+    const h = (percent / 100) * maxH;
+    const y = bottomY - h;
+
+    if (svgLiquidBody) {
+        svgLiquidBody.setAttribute('y', y.toFixed(2));
+        svgLiquidBody.setAttribute('height', h.toFixed(2));
+    }
+
+    if (svgWaveGroup) {
+        svgWaveGroup.setAttribute('transform', `translate(0, ${y.toFixed(2)})`);
+        if (percent <= 0.8) {
+            svgWaveGroup.style.opacity = '0';
+        } else {
+            svgWaveGroup.style.opacity = '1';
+        }
+    }
+
+    if (svgLiquidGlow) {
+        svgLiquidGlow.style.opacity = percent > 15 ? '1' : (percent > 3 ? '0.4' : '0');
+    }
+
+    if (svgBubbles) {
+        svgBubbles.style.opacity = percent > 8 ? '1' : (percent > 2 ? '0.3' : '0');
+    }
+}
+
+// Animation chuyển động mực nước mượt mà theo hàm cubic
+function animateLiquidLevel(startPercent, endPercent, duration) {
+    if (liquidAnimFrame) {
+        cancelAnimationFrame(liquidAnimFrame);
+    }
+
+    if (Math.abs(startPercent - endPercent) < 0.1) {
+        currentAnimatedPercent = endPercent;
+        applyLiquidLevel(endPercent);
+        return;
+    }
+
+    const startTime = performance.now();
+
+    function step(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(1, elapsed / duration);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const val = startPercent + (endPercent - startPercent) * easeOut;
+        currentAnimatedPercent = val;
+        applyLiquidLevel(val);
+
+        if (progress < 1) {
+            liquidAnimFrame = requestAnimationFrame(step);
+        } else {
+            currentAnimatedPercent = endPercent;
+            applyLiquidLevel(endPercent);
+        }
+    }
+
+    liquidAnimFrame = requestAnimationFrame(step);
 }
 
 // Hàm kích hoạt các giọt nước rơi nối tiếp nhau
@@ -107,17 +182,21 @@ function createSingleDroplet() {
     const droplet = document.createElement('div');
     droplet.className = 'water-droplet';
 
-    // Random nhẹ vị trí X quanh miệng bình (khoảng giữa màn hình 50% +- 10px)
-    const randomOffsetX = (Math.random() * 20 - 10).toFixed(1);
+    // Random nhẹ vị trí X quanh miệng bình (khoảng giữa màn hình 50% +- 8px)
+    const randomOffsetX = (Math.random() * 16 - 8).toFixed(1);
     droplet.style.left = `calc(50% + ${randomOffsetX}px)`;
 
     // Tính điểm rơi Y theo mực nước hiện tại trong bình
-    // Chiều cao bình là 250px, miệng bình nằm ở Y ~24px, đáy bình ở Y ~220px
-    const currentPercent = parseFloat(liquidBody.style.height) || 0;
-    const waterSurfaceY = 220 - (currentPercent * 1.6);
-    const targetY = Math.max(40, Math.min(220, waterSurfaceY));
-    droplet.style.setProperty('--target-y', `${targetY}px`);
+    // Bình nằm trong #jar-container (viewBox 0 0 160 220)
+    const maxH = 182;
+    const bottomY = 218;
+    const surfaceSvgY = bottomY - (currentAnimatedPercent / 100) * maxH;
 
+    const containerTop = jarContainer ? jarContainer.offsetTop : 90;
+    const scale = jarContainer ? (jarContainer.clientHeight / 220) : 1.136;
+    const targetY = Math.round(containerTop + (surfaceSvgY * scale));
+
+    droplet.style.setProperty('--target-y', `${targetY}px`);
     dropletsContainer.appendChild(droplet);
 
     // Sau khi rơi tới bề mặt nước (khoảng 700ms), tạo hiệu ứng gợn sóng (ripple)
@@ -137,10 +216,10 @@ function createSplashRipple(offsetX, targetY) {
     ripple.className = 'splash-ripple';
     ripple.style.left = `calc(50% + ${offsetX}px)`;
     ripple.style.top = `${targetY}px`;
-    ripple.style.width = '30px';
-    ripple.style.height = '12px';
+    ripple.style.width = '28px';
+    ripple.style.height = '10px';
 
-    splashContainer.appendChild(ripple);
+    dropletsContainer.appendChild(ripple);
 
     setTimeout(() => {
         ripple.remove();

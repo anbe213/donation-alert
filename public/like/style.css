@@ -106,91 +106,67 @@ body {
     pointer-events: none;
 }
 
-/* Lớp vỏ bọc nước bên trong thân bình */
-#liquid-wrapper {
-    position: relative;
-    width: 136px;
-    height: 160px;
-    margin-bottom: 2px;
-    border-bottom-left-radius: 46px;
-    border-bottom-right-radius: 46px;
-    overflow: hidden;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+/* --- CHẤT LỎNG VÀ HIỆU ỨNG BÊN TRONG BÌNH SVG --- */
+#svg-liquid-body {
+    filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.5));
 }
 
-/* Khối dung dịch nước xanh biển pha lê */
-#liquid-body {
-    position: relative;
-    width: 100%;
-    height: 0%; /* Cập nhật động từ JS */
-    background: linear-gradient(to top, #083344 0%, #0e7490 25%, #06b6d4 60%, #38bdf8 95%, #e0f2fe 100%);
-    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5), 0 0 30px rgba(6, 182, 212, 0.7);
-    transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+#svg-liquid-glow,
+#svg-bubbles,
+#svg-wave-group {
+    transition: opacity 0.5s ease;
 }
 
-/* Bề mặt nước nhấp nhô */
-#liquid-surface {
-    position: absolute;
-    top: -5px;
-    left: 0;
-    width: 100%;
-    height: 10px;
-    overflow: hidden;
+/* Sóng nước ma thuật nhấp nhô */
+.svg-wave {
+    pointer-events: none;
 }
 
-.wave {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 200%;
-    height: 100%;
-    background: radial-gradient(ellipse at 50% 100%, rgba(224, 242, 254, 0.9) 0%, rgba(56, 189, 248, 0.6) 70%, transparent 100%);
-    animation: waveMotion 3s infinite linear;
+.wave-back {
+    animation: waveScrollBack 3.2s linear infinite;
 }
 
-.wave2 {
-    animation: waveMotion 2s infinite linear reverse;
-    opacity: 0.6;
+.wave-front {
+    animation: waveScrollFront 2.4s linear infinite;
 }
 
-@keyframes waveMotion {
+@keyframes waveScrollBack {
     0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    100% { transform: translateX(-160px); }
+}
+
+@keyframes waveScrollFront {
+    0% { transform: translateX(-160px); }
+    100% { transform: translateX(0); }
 }
 
 /* Bọt khí ma thuật bay lơ lửng trong nước */
-.bubble {
-    position: absolute;
-    bottom: -10px;
-    background: rgba(255, 255, 255, 0.6);
-    border-radius: 50%;
-    box-shadow: 0 0 6px #7dd3fc;
-    animation: bubbleFloat 4s infinite ease-in;
+.svg-bubble {
+    animation: svgBubbleRise 4s infinite ease-in;
 }
 
-.b1 { width: 6px; height: 6px; left: 25%; animation-duration: 3.5s; }
-.b2 { width: 8px; height: 8px; left: 55%; animation-duration: 4.8s; animation-delay: 1.2s; }
-.b3 { width: 5px; height: 5px; left: 75%; animation-duration: 3.2s; animation-delay: 2.1s; }
+.sb1 { animation-duration: 3.5s; }
+.sb2 { animation-duration: 4.8s; animation-delay: 1.2s; }
+.sb3 { animation-duration: 3.2s; animation-delay: 2.1s; }
+.sb4 { animation-duration: 4.2s; animation-delay: 0.6s; }
+.sb5 { animation-duration: 3.8s; animation-delay: 1.7s; }
+.sb6 { animation-duration: 4.5s; animation-delay: 2.7s; }
 
-@keyframes bubbleFloat {
-    0% { transform: translateY(0) scale(0.8); opacity: 0; }
-    20% { opacity: 0.8; }
-    80% { opacity: 0.8; }
-    100% { transform: translateY(-150px) scale(1.2); opacity: 0; }
-}
-
-/* Vùng tia nước bắn khi chạm mặt */
-#splash-container {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 15;
+@keyframes svgBubbleRise {
+    0% {
+        transform: translateY(0) scale(0.8);
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.85;
+    }
+    80% {
+        opacity: 0.85;
+    }
+    100% {
+        transform: translateY(-130px) scale(1.2);
+        opacity: 0;
+    }
 }
 
 /* --- BẢNG TEXT MEDIEVAL FANTASY --- */
@@ -255,11 +231,16 @@ body {
 }
 
 /* Hiệu ứng khi hoàn thành 100% Goal */
-.goal-reached #liquid-body {
-    animation: magicPulse 1.5s infinite alternate;
+.goal-reached #jar-svg {
+    filter: drop-shadow(0 0 20px #38bdf8) drop-shadow(0 10px 25px rgba(0, 0, 0, 0.7));
+    animation: jarMagicPulse 1.4s infinite alternate ease-in-out;
 }
 
-@keyframes magicPulse {
-    0% { filter: drop-shadow(0 0 15px #38bdf8); }
-    100% { filter: drop-shadow(0 0 35px #a5f3fc); }
+@keyframes jarMagicPulse {
+    0% {
+        filter: drop-shadow(0 0 15px #38bdf8) drop-shadow(0 10px 25px rgba(0, 0, 0, 0.7));
+    }
+    100% {
+        filter: drop-shadow(0 0 32px #7dd3fc) drop-shadow(0 0 50px rgba(6, 182, 212, 0.8)) drop-shadow(0 10px 25px rgba(0, 0, 0, 0.7));
+    }
 }
