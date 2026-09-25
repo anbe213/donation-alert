@@ -37,22 +37,22 @@ Dưới đây là ý nghĩa của từng trường dữ liệu trong file:
       {
         "target": 500000,
         "title": "Mục tiêu 1: Rước Đèn Ông Sao",
-        "image": "assets/mid_autumn_1.svg"
+        "image": "assets/mid_autumn_1.jpg"
       },
       {
         "target": 1000000,
         "title": "Mục tiêu 2: Bánh Dẻo Đậu Xanh",
-        "image": "assets/mid_autumn_2.svg"
+        "image": "assets/mid_autumn_2.jpg"
       },
       {
         "target": 1500000,
         "title": "Mục tiêu 3: Múa Lân Phá Cỗ",
-        "image": "assets/mid_autumn_3.svg"
+        "image": "assets/mid_autumn_3.jpg"
       },
       {
         "target": 2000000,
         "title": "Mục tiêu 4: Ngắm Trăng Rằm Đoàn Viên",
-        "image": "assets/mid_autumn_4.svg"
+        "image": "assets/mid_autumn_4.jpg"
       }
     ]
   }
