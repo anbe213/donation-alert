@@ -12,10 +12,12 @@ Dưới đây là ý nghĩa của từng trường dữ liệu trong file:
   - `"bar"`: Hiển thị giao diện thanh ngang tiêu chuẩn (Kèm nhân vật chạy trên đầu).
   - `"potion"`: Hiển thị giao diện bình thủy tinh nghiêng (Bình chứa chất lỏng).
 - `mid_autumn`: (Khối đối tượng riêng) Cấu hình 4 bậc Goal cho phiên bản Trung Thu. Được bọc trong một ngoặc `{}` to để dễ chỉnh sửa và không ảnh hưởng đến các theme khác:
+  - `frame_width`: (Tùy chọn) Chiều rộng khung ảnh tính theo pixel (Mặc định: `280`).
+  - `frame_height`: (Tùy chọn) Chiều cao khung ảnh tính theo pixel (Mặc định: `200`).
   - `goals`: Danh sách 4 bậc mục tiêu. Mỗi bậc bao gồm:
     - `target`: Mốc tiền đạt được cho bậc này (VNĐ).
-    - `title`: Tiêu đề riêng cho bậc này (Sẽ hiển thị chính giữa thanh bar thay cho số tiền).
-    - `image`: Đường dẫn đến ảnh đời thường muốn hiển thị trong khung (VD: `"assets/anh_cua_ban.jpg"`). Ảnh sẽ được tự động cắt gọt vừa vặn trong khung và không bị tràn viền.
+    - `title`: Tiêu đề riêng cho bậc này (Sẽ hiển thị trên thanh donate bên dưới ảnh).
+    - `image`: Đường dẫn đến ảnh đời thường muốn hiển thị trong khung (VD: `"assets/anh_cua_ban.jpg"`). Ảnh sẽ là tâm điểm tĩnh với kích thước lớn, tự động cắt gọt vừa vặn bên trong khung và tuyệt đối không bao giờ tràn viền.
 
 ## Ví dụ mẫu phiên bản Trung Thu ("mid-autumn"):
 ```json

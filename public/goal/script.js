@@ -131,28 +131,42 @@ const updateMidAutumnUI = (current, midAutumnConfig) => {
         percentage = Math.max(0, Math.min(100, percentage));
     }
 
-    // 3. Cập nhật thanh trượt và vị trí khung ảnh chạy theo tiến trình
-    const progressFill = document.getElementById('mid-autumn-progress-fill');
-    const frameContainer = document.getElementById('mid-autumn-frame-container');
-    if (progressFill) progressFill.style.width = `${percentage}%`;
-    if (frameContainer) frameContainer.style.left = `${percentage}%`;
+    // 3. Tùy chỉnh kích thước khung ảnh nếu có cấu hình trong mid_autumn
+    const cardEl = document.getElementById('mid-autumn-card');
+    const frameEl = document.getElementById('mid-autumn-frame');
+    if (cardEl && midAutumnConfig && midAutumnConfig.frame_width) {
+        cardEl.style.setProperty('--card-width', `${midAutumnConfig.frame_width}px`);
+    }
+    if (frameEl && midAutumnConfig && midAutumnConfig.frame_height) {
+        frameEl.style.setProperty('--frame-height', `${midAutumnConfig.frame_height}px`);
+    }
 
-    // 4. Cập nhật Title: Chỉ hiện duy nhất title của bậc goal hiện tại (Hoàn toàn ẩn số tiền)
+    // 4. Cập nhật thanh trượt tiến trình bên dưới ảnh (Khung ảnh giữ nguyên vị trí tĩnh)
+    const progressFill = document.getElementById('mid-autumn-progress-fill');
+    if (progressFill) progressFill.style.width = `${percentage}%`;
+
+    // 5. Cập nhật Title: Chỉ hiện duy nhất title của bậc goal hiện tại (Hoàn toàn ẩn số tiền)
     const titleText = document.getElementById('mid-autumn-title-text');
     if (titleText) {
         titleText.innerText = currentGoal.title || `Mục tiêu ${activeIndex + 1}`;
     }
 
-    // 5. Cập nhật ảnh vào khung ảnh (khóa viền overflow:hidden, không bao giờ tràn khung)
+    // 6. Cập nhật ảnh vào khung ảnh (khóa viền overflow:hidden, không bao giờ tràn khung)
     const photoImg = document.getElementById('mid-autumn-photo');
     const placeholder = document.getElementById('mid-autumn-placeholder');
 
     if (photoImg) {
         const targetSrc = currentGoal.image || '';
         if (targetSrc.trim() !== '') {
-            // Nếu ảnh khác với ảnh đang hiển thị thì cập nhật
+            // Nếu ảnh khác với ảnh đang hiển thị thì đổi ảnh kèm hiệu ứng fade
             if (!photoImg.src.endsWith(targetSrc)) {
-                photoImg.src = targetSrc;
+                photoImg.classList.add('photo-transition');
+                setTimeout(() => {
+                    photoImg.src = targetSrc;
+                    photoImg.classList.remove('photo-transition');
+                }, 200);
+            } else {
+                photoImg.classList.remove('photo-transition');
             }
             photoImg.style.display = 'block';
             if (placeholder) placeholder.style.display = 'none';
@@ -175,7 +189,7 @@ const updateMidAutumnUI = (current, midAutumnConfig) => {
         }
     }
 
-    // 6. Hiệu ứng ăn mừng khi hoàn thành tất cả mục tiêu
+    // 7. Hiệu ứng ăn mừng khi hoàn thành tất cả mục tiêu
     if (isAllCompleted && midAutumnEl) {
         midAutumnEl.classList.add('mid-autumn-completed');
     } else if (midAutumnEl) {

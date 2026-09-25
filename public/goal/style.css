@@ -212,62 +212,63 @@ body {
 }
 
 /* =========================================
-   THEME 3: MID-AUTUMN (TRUNG THU - 4 GOALS)
+   THEME 3: MID-AUTUMN (TRUNG THU - KHUNG ẢNH LỚN LÀM TÂM ĐIỂM)
    ========================================= */
 #theme-mid-autumn {
     font-family: 'Palatino', 'Cinzel', 'Playfair Display', serif;
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 0 80px; /* Cách hai mép màn hình 80px để khung ảnh không bị cắt mép */
-}
-
-#mid-autumn-container {
-    position: relative;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/* Khung ảnh di chuyển linh hoạt theo tiến trình */
-#mid-autumn-frame-container {
-    position: absolute;
-    bottom: 100%;
-    left: 0%;
+    bottom: 25px;
+    left: 50%;
     transform: translateX(-50%);
-    margin-bottom: 8px;
-    z-index: 10;
-    transition: left 1s cubic-bezier(0.4, 0, 0.2, 1);
+    width: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-end;
+    box-sizing: border-box;
     pointer-events: none;
 }
 
-/* Chiếc khung ảnh sang trọng (cắt bớt ảnh thừa, tuyệt đối không tràn viền) */
+/* Thẻ ảnh tổng thể (Tĩnh, không di chuyển theo donate) */
+#mid-autumn-card {
+    position: relative;
+    width: var(--card-width, 280px); /* Bức ảnh to làm tâm điểm */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    box-sizing: border-box;
+    filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.85));
+}
+
+/* Chiếc khung ảnh lớn sang trọng (Cắt bớt ảnh thừa, tuyệt đối không tràn viền) */
 #mid-autumn-frame {
     position: relative;
-    width: 78px;
-    height: 78px;
+    width: 100%;
+    height: var(--frame-height, 200px); /* Kích thước ảnh lớn rõ nét */
     box-sizing: border-box;
-    background: #1a1412;
-    border: 3px solid #f59e0b; /* Viền vàng hoàng gia / ánh trăng */
+    background: #140d07;
+    border: 3.5px solid #f59e0b; /* Viền vàng hoàng gia / ánh trăng */
     outline: 2px solid #78350f; /* Viền gỗ gụ sẫm */
     outline-offset: -1px;
-    border-radius: 10px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.8), 0 0 14px rgba(245, 158, 11, 0.45);
-    overflow: hidden; /* CỰC KỲ QUAN TRỌNG: Khóa chặt ảnh 100% bên trong khung */
+    border-bottom: none; /* Nối liền mạch với thanh title bên dưới */
+    border-radius: 12px 12px 0 0;
+    overflow: hidden; /* CỰC KỲ QUAN TRỌNG: Ảnh đời thường không bao giờ tràn ra ngoài khung */
 }
 
 /* Ảnh đời thường bên trong khung */
 .frame-photo {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Tự động cắt phần ảnh thừa, giữ đúng tỉ lệ, không méo hình */
+    object-fit: cover; /* Tự động cắt phần ảnh thừa vừa vặn trong khung, giữ đúng tỉ lệ, không méo hình */
     object-position: center;
     display: block;
     transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+}
+
+/* Hiệu ứng chuyển mượt mà khi đổi ảnh giữa các bậc Goal */
+.photo-transition {
+    opacity: 0;
+    transform: scale(0.96);
 }
 
 /* Placeholder khi chưa có file ảnh hoặc ảnh lỗi */
@@ -286,40 +287,31 @@ body {
 }
 
 .placeholder-icon {
-    font-size: 26px;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    font-size: 38px;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
 }
 
 .placeholder-text {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: bold;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     color: #fef08a;
-    margin-top: 2px;
+    margin-top: 6px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
 }
 
-/* Mũi tên / Con trỏ ánh kim chỉ xuống thanh bar */
-.frame-pointer {
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 6px solid #f59e0b;
-    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6));
-    margin-top: -1px;
-}
-
-/* Vỏ bọc thanh bar */
+/* Thanh donate nhỏ liền kề bên dưới - Nơi chứa Title và thanh tiến trình */
 #mid-autumn-bar-wrapper {
     position: relative;
     width: 100%;
-    height: 42px;
+    height: 38px;
     box-sizing: border-box;
-    border-radius: 8px;
+    border: 2px solid #b45309;
+    border-top: 1.5px solid #d97706;
+    border-radius: 0 0 10px 10px;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.75);
-    border: 2px solid #b45309;
 }
 
 /* Nền thanh bar (Bầu trời đêm trăng rằm) */
@@ -356,40 +348,36 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 20px;
+    padding: 0 12px;
     box-sizing: border-box;
     z-index: 5;
     pointer-events: none;
 }
 
 #mid-autumn-title-text {
-    font-size: 19px;
+    font-size: 15px;
     font-weight: 700;
     color: #ffffff;
-    text-shadow: 1px 1px 3px #000, 0 0 10px rgba(0, 0, 0, 0.95), 0 0 15px rgba(180, 83, 9, 0.8);
-    letter-spacing: 1.5px;
+    text-shadow: 1px 1px 3px #000, 0 0 8px rgba(0, 0, 0, 0.95), 0 0 12px rgba(180, 83, 9, 0.8);
+    letter-spacing: 1px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: center;
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 /* Hiệu ứng khi hoàn thành 100% tất cả 4 goal */
-.mid-autumn-completed #mid-autumn-frame {
-    border-color: #fef08a;
-    animation: midAutumnGlow 1.5s infinite alternate ease-in-out;
-}
-
-.mid-autumn-completed #mid-autumn-bar-wrapper {
-    border-color: #fef08a;
+.mid-autumn-completed #mid-autumn-card {
+    filter: drop-shadow(0 0 20px #f59e0b) drop-shadow(0 10px 25px rgba(0, 0, 0, 0.9));
     animation: midAutumnGlow 1.5s infinite alternate ease-in-out;
 }
 
 @keyframes midAutumnGlow {
     0% {
-        box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+        filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.5)) drop-shadow(0 10px 25px rgba(0, 0, 0, 0.85));
     }
     100% {
-        box-shadow: 0 0 25px rgba(254, 240, 138, 0.9), 0 0 45px rgba(245, 158, 11, 0.6);
+        filter: drop-shadow(0 0 25px rgba(254, 240, 138, 0.95)) drop-shadow(0 0 45px rgba(245, 158, 11, 0.7)) drop-shadow(0 10px 25px rgba(0, 0, 0, 0.85));
     }
 }
