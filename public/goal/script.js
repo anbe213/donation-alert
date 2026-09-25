@@ -149,13 +149,30 @@ const updateMidAutumnUI = (current, midAutumnConfig) => {
     }
 
     // 4. Cập nhật thanh trượt tiến trình bên dưới ảnh (Khung ảnh giữ nguyên vị trí tĩnh)
+    // Cho phép bật/tắt thanh tiến trình qua config "show_progress": true/false (mặc định true)
     const progressFill = document.getElementById('mid-autumn-progress-fill');
-    if (progressFill) progressFill.style.width = `${percentage}%`;
+    const showProgress = midAutumnConfig ? (midAutumnConfig.show_progress !== false && midAutumnConfig.enable_progress !== false) : true;
+    if (progressFill) {
+        progressFill.style.display = showProgress ? 'block' : 'none';
+        progressFill.style.width = `${percentage}%`;
+    }
 
     // 5. Cập nhật Title: Chỉ hiện duy nhất title của bậc goal hiện tại (Hoàn toàn ẩn số tiền)
+    // Nếu đã hoàn thành tất cả các mục tiêu (Goal 4) và có completed_title trong config -> hiển thị completed_title
     const titleText = document.getElementById('mid-autumn-title-text');
     if (titleText) {
-        titleText.innerText = currentGoal.title || `Mục tiêu ${activeIndex + 1}`;
+        if (isAllCompleted && midAutumnConfig && midAutumnConfig.completed_title) {
+            titleText.innerText = midAutumnConfig.completed_title;
+        } else {
+            titleText.innerText = currentGoal.title || `Mục tiêu ${activeIndex + 1}`;
+        }
+    }
+
+    // Bật/tắt khung decor Trung Thu toàn màn hình qua config "screen_decor": true/false (mặc định true)
+    const screenDecorEl = document.getElementById('mid-autumn-screen-decor');
+    const showScreenDecor = midAutumnConfig ? (midAutumnConfig.screen_decor !== false && midAutumnConfig.show_screen_decor !== false) : true;
+    if (screenDecorEl) {
+        screenDecorEl.style.display = showScreenDecor ? 'block' : 'none';
     }
 
     // 6. Cập nhật ảnh vào khung ảnh (khóa viền overflow:hidden, không bao giờ tràn khung)

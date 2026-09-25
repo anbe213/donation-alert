@@ -1,12 +1,15 @@
 {
   "title": "Stream 2/9",
   "target": 1000000,
-  "current": 0,
+  "current": 750000,
   "type": "mid-autumn",
   "enemySize": 3,
   "mid_autumn": {
     "width": 400,
     "height": 200,
+    "show_progress": true,
+    "screen_decor": true,
+    "completed_title": "🎉 ĐÃ PHÁ CỖ TRUNG THU THÀNH CÔNG!",
     "goals": [
       {
         "target": 500000,
@@ -16,7 +19,7 @@
       {
         "target": 1000000,
         "title": "Mục tiêu 2: Bánh Dẻo Đậu Xanh",
-        "image": "assets/mid_autumn_2.svg"
+        "image": "assets/mid_autumn_2.jpg"
       },
       {
         "target": 1500000,
