@@ -1,0 +1,337 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Playfair+Display:wght@700&display=swap');
+
+:root {
+    --lantern-offset: 155px; /* Dịch chuyển vào giữa thêm 100px so với mép 55px ban đầu */
+    --gold-primary: #f59e0b;
+    --gold-light: #fef08a;
+    --gold-glow: rgba(245, 158, 11, 0.45);
+    --lantern-red: #ef4444;
+    --lantern-dark-red: #991b1b;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: transparent;
+    pointer-events: none;
+    user-select: none;
+    font-family: 'Cinzel', 'Playfair Display', serif;
+}
+
+#screen-decor-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 9999;
+}
+
+/* =========================================
+   1. DẢI VIỀN MỜ ÁNH KIM SÁT MÉP MÀN HÌNH (0px PADDING)
+   ========================================= */
+.decor-border-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid rgba(245, 158, 11, 0.55);
+    box-shadow: inset 0 0 20px rgba(245, 158, 11, 0.15), 0 0 10px rgba(245, 158, 11, 0.3);
+    pointer-events: none;
+}
+
+/* =========================================
+   2. 4 GÓC HOA VĂN DÁT VÀNG CỔ PHONG (SÁT MÉP MÀN HÌNH)
+   ========================================= */
+.decor-corner {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.corner-top-left {
+    top: 0;
+    left: 0;
+    border-top: 4px solid var(--gold-primary);
+    border-left: 4px solid var(--gold-primary);
+}
+
+.corner-top-right {
+    top: 0;
+    right: 0;
+    border-top: 4px solid var(--gold-primary);
+    border-right: 4px solid var(--gold-primary);
+}
+
+.corner-bottom-left {
+    bottom: 0;
+    left: 0;
+    border-bottom: 4px solid var(--gold-primary);
+    border-left: 4px solid var(--gold-primary);
+}
+
+.corner-bottom-right {
+    bottom: 0;
+    right: 0;
+    border-bottom: 4px solid var(--gold-primary);
+    border-right: 4px solid var(--gold-primary);
+}
+
+/* Chấm ngọc dát vàng trang trí góc */
+.decor-corner::after {
+    content: "";
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    background: var(--gold-light);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--gold-primary), 0 0 4px #ffffff;
+}
+
+.corner-top-left::after { top: 6px; left: 6px; }
+.corner-top-right::after { top: 6px; right: 6px; }
+.corner-bottom-left::after { bottom: 6px; left: 6px; }
+.corner-bottom-right::after { bottom: 6px; right: 6px; }
+
+/* Đường viền phụ góc cổ điển */
+.decor-corner::before {
+    content: "";
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    border: 1.5px solid rgba(245, 158, 11, 0.4);
+}
+
+.corner-top-left::before {
+    top: 4px;
+    left: 4px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.corner-top-right::before {
+    top: 4px;
+    right: 4px;
+    border-left: none;
+    border-bottom: none;
+}
+
+.corner-bottom-left::before {
+    bottom: 4px;
+    left: 4px;
+    border-right: none;
+    border-top: none;
+}
+
+.corner-bottom-right::before {
+    bottom: 4px;
+    right: 4px;
+    border-left: none;
+    border-top: none;
+}
+
+/* =========================================
+   3. ĐÈN LỒNG TREO ĐUNG ĐƯA (DỊCH VÀO GIỮA THÊM 100PX)
+   ========================================= */
+.lantern-wrapper {
+    position: absolute;
+    top: 0;
+    z-index: 15;
+    transform-origin: top center;
+    animation: lanternSway 3.8s ease-in-out infinite alternate;
+}
+
+.lantern-left {
+    left: var(--lantern-offset, 155px);
+    animation-duration: 4.2s;
+}
+
+.lantern-right {
+    right: var(--lantern-offset, 155px);
+    animation-duration: 3.7s;
+    animation-delay: -1.8s;
+}
+
+@keyframes lanternSway {
+    0% { transform: rotate(-3.5deg); }
+    100% { transform: rotate(3.5deg); }
+}
+
+.lantern-rope {
+    width: 2px;
+    height: 48px;
+    background: linear-gradient(180deg, #78350f, #b45309);
+    margin: 0 auto;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+.lantern-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.lantern-head {
+    width: 24px;
+    height: 7px;
+    background: #78350f;
+    border-radius: 3px;
+    border: 1px solid var(--gold-primary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.lantern-body {
+    width: 46px;
+    height: 56px;
+    background: radial-gradient(circle at 50% 45%, #f87171 0%, var(--lantern-red) 35%, var(--lantern-dark-red) 75%, #450a0a 100%);
+    border-radius: 22px;
+    border: 2px solid var(--gold-primary);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.8), 0 0 35px var(--gold-glow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Gân nan lồng đèn truyền thống */
+.lantern-body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22px;
+    border-left: 1px solid rgba(254, 240, 138, 0.25);
+    border-right: 1px solid rgba(254, 240, 138, 0.25);
+    pointer-events: none;
+}
+
+.lantern-text {
+    color: var(--gold-light);
+    font-size: 22px;
+    font-weight: 700;
+    font-family: 'Cinzel', serif;
+    text-shadow: 0 0 8px #78350f, 1px 1px 3px #000;
+    z-index: 2;
+}
+
+.lantern-tail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tassel {
+    width: 4px;
+    height: 42px;
+    background: linear-gradient(180deg, var(--gold-primary) 0%, #dc2626 50%, #991b1b 100%);
+    border-radius: 0 0 3px 3px;
+    box-shadow: 0 3px 8px rgba(220, 38, 38, 0.6);
+}
+
+/* =========================================
+   4. CỤM TRĂNG RẰM & MÂY NGŨ SẮC GÓC TRÊN CHÍNH GIỮA
+   ========================================= */
+.decor-moon-cluster {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0.9;
+    pointer-events: none;
+    z-index: 12;
+}
+
+.decor-moon {
+    width: 52px;
+    height: 52px;
+    background: radial-gradient(circle at 35% 35%, #ffffff 0%, var(--gold-light) 40%, var(--gold-primary) 90%);
+    border-radius: 50%;
+    box-shadow: 0 0 25px var(--gold-light), 0 0 55px rgba(245, 158, 11, 0.55);
+    animation: moonGlow 4s infinite alternate ease-in-out;
+}
+
+@keyframes moonGlow {
+    0% { filter: drop-shadow(0 0 8px rgba(254, 240, 138, 0.7)); }
+    100% { filter: drop-shadow(0 0 22px rgba(245, 158, 11, 0.9)); }
+}
+
+.decor-cloud {
+    position: absolute;
+    height: 11px;
+    border-radius: 8px;
+    filter: blur(1px);
+    pointer-events: none;
+}
+
+.cloud-1 {
+    width: 75px;
+    top: 28px;
+    left: -25px;
+    background: linear-gradient(90deg, transparent, rgba(254, 240, 138, 0.45), transparent);
+    animation: cloudDrift1 6s infinite ease-in-out alternate;
+}
+
+.cloud-2 {
+    width: 85px;
+    top: 36px;
+    right: -28px;
+    background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.4), transparent);
+    animation: cloudDrift2 7.5s infinite ease-in-out alternate;
+}
+
+@keyframes cloudDrift1 {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(8px); }
+}
+
+@keyframes cloudDrift2 {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-10px); }
+}
+
+/* =========================================
+   5. TINH TÚ VÀNG / ĐOM ĐÓM BAY LƠ LỬNG
+   ========================================= */
+.stardust {
+    position: absolute;
+    width: 4.5px;
+    height: 4.5px;
+    background: var(--gold-light);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--gold-primary), 0 0 16px #fbbf24;
+    animation: stardustFloat 6s infinite ease-in-out alternate;
+    pointer-events: none;
+}
+
+.s1 { top: 20%; left: 14%; animation-duration: 5.5s; }
+.s2 { top: 35%; right: 18%; animation-duration: 7s; animation-delay: -2s; }
+.s3 { top: 60%; left: 22%; animation-duration: 6.2s; animation-delay: -3.5s; }
+.s4 { top: 26%; left: 46%; animation-duration: 8s; animation-delay: -1s; }
+.s5 { top: 50%; right: 28%; animation-duration: 5.8s; animation-delay: -4s; }
+.s6 { top: 72%; right: 12%; animation-duration: 6.5s; animation-delay: -1.5s; }
+.s7 { top: 82%; left: 35%; animation-duration: 7.2s; animation-delay: -3s; }
+.s8 { top: 15%; right: 40%; animation-duration: 5.2s; animation-delay: -2.5s; }
+
+@keyframes stardustFloat {
+    0% { transform: translateY(0) scale(0.8); opacity: 0.2; }
+    50% { transform: translateY(-18px) scale(1.3); opacity: 0.95; }
+    100% { transform: translateY(-36px) scale(0.6); opacity: 0.1; }
+}

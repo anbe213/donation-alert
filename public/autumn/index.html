@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mid-Autumn Screen Decor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="screen-decor-container">
+        <!-- 1. Dải viền mờ ánh kim sát mép 4 cạnh màn hình (0px padding) -->
+        <div id="decor-border" class="decor-border-frame"></div>
+
+        <!-- 2. Bốn góc hoa văn cổ phong dát vàng (Sát mép màn hình) -->
+        <div class="decor-corner corner-top-left"></div>
+        <div class="decor-corner corner-top-right"></div>
+        <div class="decor-corner corner-bottom-left"></div>
+        <div class="decor-corner corner-bottom-right"></div>
+
+        <!-- 3. Cụm lồng đèn Trung Thu đung đưa (Đã dịch vào giữa ~155px) -->
+        <div id="lanterns-container">
+            <!-- Lồng đèn trái (Chữ Trung 中) -->
+            <div class="lantern-wrapper lantern-left">
+                <div class="lantern-rope"></div>
+                <div class="lantern-item">
+                    <div class="lantern-head"></div>
+                    <div class="lantern-body">
+                        <span id="lantern-left-text" class="lantern-text">中</span>
+                    </div>
+                    <div class="lantern-tail">
+                        <div class="tassel"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lồng đèn phải (Chữ Thu 秋) -->
+            <div class="lantern-wrapper lantern-right">
+                <div class="lantern-rope"></div>
+                <div class="lantern-item">
+                    <div class="lantern-head"></div>
+                    <div class="lantern-body">
+                        <span id="lantern-right-text" class="lantern-text">秋</span>
+                    </div>
+                    <div class="lantern-tail">
+                        <div class="tassel"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Cụm trăng rằm và mây ngũ sắc góc trên chính giữa -->
+        <div id="decor-moon-cluster" class="decor-moon-cluster">
+            <div class="decor-moon"></div>
+            <div class="decor-cloud cloud-1"></div>
+            <div class="decor-cloud cloud-2"></div>
+        </div>
+
+        <!-- 5. Tinh tú vàng / đom đóm bay lơ lửng -->
+        <div id="stardust-container">
+            <div class="stardust s1"></div>
+            <div class="stardust s2"></div>
+            <div class="stardust s3"></div>
+            <div class="stardust s4"></div>
+            <div class="stardust s5"></div>
+            <div class="stardust s6"></div>
+            <div class="stardust s7"></div>
+            <div class="stardust s8"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

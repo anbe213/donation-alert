@@ -15,7 +15,6 @@ Dưới đây là ý nghĩa của từng trường dữ liệu trong file:
   - `width`: (Tùy chọn) Chiều rộng khung ảnh tính theo pixel (Mặc định: `280`).
   - `height`: (Tùy chọn) Chiều cao khung ảnh tính theo pixel (Mặc định: `200`).
   - `show_progress`: (Tùy chọn: `true` / `false`, mặc định `true`) Bật hoặc tắt thanh trượt tiến trình màu vàng bên dưới ảnh. Nếu đặt `false`, thanh vàng sẽ ẩn đi hoàn toàn, giữ lại thanh viền tối giản sang trọng chỉ hiển thị Title.
-  - `screen_decor`: (Tùy chọn: `true` / `false`, mặc định `true`) Bật hoặc tắt khung decor Trung Thu toàn màn hình (Dải viền dát vàng 4 cạnh, 4 góc hoa văn cổ phong, 2 lồng đèn Trung & Thu đung đưa, trăng rằm mây bay và tinh tú lung linh).
   - `completed_title`: (Tùy chọn) Tiêu đề đặc biệt sẽ tự động hiển thị khi hoàn thành toàn bộ mốc cao nhất (Mục tiêu 4) thay vì tiêu đề của Goal 4 (VD: `"🎉 ĐÃ PHÁ CỖ TRUNG THU THÀNH CÔNG!"`).
   - `goals`: Danh sách 4 bậc mục tiêu. Mỗi bậc bao gồm:
     - `target`: Mốc tiền đạt được cho bậc này (VNĐ).
@@ -33,7 +32,6 @@ Dưới đây là ý nghĩa của từng trường dữ liệu trong file:
     "width": 400,
     "height": 200,
     "show_progress": true,
-    "screen_decor": true,
     "completed_title": "🎉 ĐÃ PHÁ CỖ TRUNG THU THÀNH CÔNG!",
     "goals": [
       {

@@ -168,13 +168,6 @@ const updateMidAutumnUI = (current, midAutumnConfig) => {
         }
     }
 
-    // Bật/tắt khung decor Trung Thu toàn màn hình qua config "screen_decor": true/false (mặc định true)
-    const screenDecorEl = document.getElementById('mid-autumn-screen-decor');
-    const showScreenDecor = midAutumnConfig ? (midAutumnConfig.screen_decor !== false && midAutumnConfig.show_screen_decor !== false) : true;
-    if (screenDecorEl) {
-        screenDecorEl.style.display = showScreenDecor ? 'block' : 'none';
-    }
-
     // 6. Cập nhật ảnh vào khung ảnh (khóa viền overflow:hidden, không bao giờ tràn khung)
     const photoImg = document.getElementById('mid-autumn-photo');
     const placeholder = document.getElementById('mid-autumn-placeholder');

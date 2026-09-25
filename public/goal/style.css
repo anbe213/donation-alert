@@ -212,259 +212,32 @@ body {
 }
 
 /* =========================================
-   THEME 3: MID-AUTUMN (TRUNG THU - KHUNG ẢNH LỚN & KHUNG DECOR TOÀN MÀN HÌNH)
+   THEME 3: MID-AUTUMN (TRUNG THU - KHUNG ẢNH LỚN LÀM TÂM ĐIỂM)
    ========================================= */
 #theme-mid-autumn {
     font-family: 'Palatino', 'Cinzel', 'Playfair Display', serif;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    box-sizing: border-box;
-    pointer-events: none;
-    overflow: hidden;
-    z-index: 5;
-}
-
-/* --- KHUNG DECOR TRUNG THU TOÀN MÀN HÌNH --- */
-#mid-autumn-screen-decor {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-}
-
-/* Dải viền mờ ánh kim 4 cạnh màn hình */
-.decor-border-frame {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-    border: 1.5px solid rgba(245, 158, 11, 0.35);
-    border-radius: 8px;
-    box-shadow: inset 0 0 15px rgba(245, 158, 11, 0.08);
-    pointer-events: none;
-}
-
-/* 4 Góc hoa văn cổ phong dát vàng */
-.decor-corner {
-    position: absolute;
-    width: 45px;
-    height: 45px;
-    border: 3px solid #f59e0b;
-    pointer-events: none;
-}
-
-.corner-top-left {
-    top: 12px;
-    left: 12px;
-    border-right: none;
-    border-bottom: none;
-    border-radius: 8px 0 0 0;
-}
-
-.corner-top-right {
-    top: 12px;
-    right: 12px;
-    border-left: none;
-    border-bottom: none;
-    border-radius: 0 8px 0 0;
-}
-
-.corner-bottom-left {
-    bottom: 12px;
-    left: 12px;
-    border-right: none;
-    border-top: none;
-    border-radius: 0 0 0 8px;
-}
-
-.corner-bottom-right {
-    bottom: 12px;
-    right: 12px;
-    border-left: none;
-    border-top: none;
-    border-radius: 0 0 8px 0;
-}
-
-.decor-corner::after {
-    content: "";
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: #fef08a;
-    border-radius: 50%;
-    box-shadow: 0 0 8px #f59e0b;
-}
-
-.corner-top-left::after { top: 5px; left: 5px; }
-.corner-top-right::after { top: 5px; right: 5px; }
-.corner-bottom-left::after { bottom: 5px; left: 5px; }
-.corner-bottom-right::after { bottom: 5px; right: 5px; }
-
-/* Đèn lồng Trung Thu treo góc trên hai bên */
-.lantern-wrapper {
-    position: absolute;
-    top: 0;
-    z-index: 8;
-    transform-origin: top center;
-    animation: lanternSway 3.6s ease-in-out infinite alternate;
-}
-
-.lantern-left {
-    left: 55px;
-    animation-duration: 4s;
-}
-
-.lantern-right {
-    right: 55px;
-    animation-duration: 3.5s;
-    animation-delay: -1.7s;
-}
-
-@keyframes lanternSway {
-    0% { transform: rotate(-3.5deg); }
-    100% { transform: rotate(3.5deg); }
-}
-
-.lantern-rope {
-    width: 2px;
-    height: 38px;
-    background: #b45309;
-    margin: 0 auto;
-}
-
-.lantern-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.lantern-head {
-    width: 22px;
-    height: 6px;
-    background: #78350f;
-    border-radius: 3px;
-    border: 1px solid #f59e0b;
-}
-
-.lantern-body {
-    width: 44px;
-    height: 52px;
-    background: radial-gradient(circle at 50% 45%, #ef4444 0%, #b91c1c 65%, #7f1d1d 100%);
-    border-radius: 20px;
-    border: 2px solid #f59e0b;
-    box-shadow: 0 0 16px rgba(239, 68, 68, 0.7), 0 0 30px rgba(245, 158, 11, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.lantern-text {
-    color: #fef08a;
-    font-size: 20px;
-    font-weight: bold;
-    font-family: 'Cinzel', serif;
-    text-shadow: 0 0 6px #78350f, 1px 1px 2px #000;
-}
-
-.lantern-tail {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.tassel {
-    width: 4px;
-    height: 35px;
-    background: linear-gradient(180deg, #f59e0b, #dc2626, #b91c1c);
-    border-radius: 0 0 3px 3px;
-    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.6);
-}
-
-/* Cụm trăng rằm và mây ngũ sắc góc trên */
-.decor-moon-cluster {
-    position: absolute;
-    top: 25px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    opacity: 0.85;
-    pointer-events: none;
-}
-
-.decor-moon {
-    width: 46px;
-    height: 46px;
-    background: radial-gradient(circle at 35% 35%, #ffffff 0%, #fef08a 40%, #f59e0b 90%);
-    border-radius: 50%;
-    box-shadow: 0 0 20px #fef08a, 0 0 40px rgba(245, 158, 11, 0.5);
-}
-
-.decor-cloud {
-    position: absolute;
-    height: 10px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    filter: blur(1px);
-}
-
-.cloud-1 {
-    width: 65px;
-    top: 26px;
-    left: -20px;
-    background: linear-gradient(90deg, transparent, rgba(254, 240, 138, 0.4), transparent);
-}
-
-.cloud-2 {
-    width: 75px;
-    top: 34px;
-    right: -22px;
-    background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.35), transparent);
-}
-
-/* Tinh tú vàng / đom đóm bay lơ lửng */
-.stardust {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: #fef08a;
-    border-radius: 50%;
-    box-shadow: 0 0 8px #f59e0b, 0 0 14px #fbbf24;
-    animation: stardustFloat 6s infinite ease-in-out alternate;
-}
-
-.s1 { top: 22%; left: 12%; animation-duration: 5.5s; }
-.s2 { top: 38%; right: 15%; animation-duration: 7s; animation-delay: -2s; }
-.s3 { top: 62%; left: 18%; animation-duration: 6.2s; animation-delay: -3.5s; }
-.s4 { top: 28%; left: 45%; animation-duration: 8s; animation-delay: -1s; }
-.s5 { top: 52%; right: 25%; animation-duration: 5.8s; animation-delay: -4s; }
-
-@keyframes stardustFloat {
-    0% { transform: translateY(0) scale(0.8); opacity: 0.2; }
-    50% { transform: translateY(-16px) scale(1.3); opacity: 0.9; }
-    100% { transform: translateY(-32px) scale(0.6); opacity: 0.1; }
-}
-
-/* Thẻ ảnh tổng thể (Tĩnh ở cạnh dưới, không di chuyển theo donate) */
-#mid-autumn-card {
     position: absolute;
     bottom: 25px;
     left: 50%;
     transform: translateX(-50%);
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+/* Thẻ ảnh tổng thể (Tĩnh, không di chuyển theo donate) */
+#mid-autumn-card {
+    position: relative;
     width: var(--card-width, 280px); /* Bức ảnh to làm tâm điểm */
     display: flex;
     flex-direction: column;
     align-items: stretch;
     box-sizing: border-box;
     filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.85));
-    z-index: 10;
 }
 
 /* Chiếc khung ảnh lớn sang trọng (Cắt bớt ảnh thừa, tuyệt đối không tràn viền) */
