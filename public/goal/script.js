@@ -131,14 +131,21 @@ const updateMidAutumnUI = (current, midAutumnConfig) => {
         percentage = Math.max(0, Math.min(100, percentage));
     }
 
-    // 3. Tùy chỉnh kích thước khung ảnh nếu có cấu hình trong mid_autumn
+    // 3. Tùy chỉnh kích thước khung ảnh (width & height) từ config mid_autumn
     const cardEl = document.getElementById('mid-autumn-card');
     const frameEl = document.getElementById('mid-autumn-frame');
-    if (cardEl && midAutumnConfig && midAutumnConfig.frame_width) {
-        cardEl.style.setProperty('--card-width', `${midAutumnConfig.frame_width}px`);
+    const customWidth = midAutumnConfig ? (midAutumnConfig.width ?? midAutumnConfig.frame_width) : null;
+    const customHeight = midAutumnConfig ? (midAutumnConfig.height ?? midAutumnConfig.frame_height) : null;
+
+    if (cardEl && customWidth !== null && customWidth !== undefined) {
+        const wVal = typeof customWidth === 'number' ? `${customWidth}px` : customWidth;
+        cardEl.style.width = wVal;
+        cardEl.style.setProperty('--card-width', wVal);
     }
-    if (frameEl && midAutumnConfig && midAutumnConfig.frame_height) {
-        frameEl.style.setProperty('--frame-height', `${midAutumnConfig.frame_height}px`);
+    if (frameEl && customHeight !== null && customHeight !== undefined) {
+        const hVal = typeof customHeight === 'number' ? `${customHeight}px` : customHeight;
+        frameEl.style.height = hVal;
+        frameEl.style.setProperty('--frame-height', hVal);
     }
 
     // 4. Cập nhật thanh trượt tiến trình bên dưới ảnh (Khung ảnh giữ nguyên vị trí tĩnh)

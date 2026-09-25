@@ -5,11 +5,13 @@
   "type": "mid-autumn",
   "enemySize": 3,
   "mid_autumn": {
+    "width": 400,
+    "height": 200,
     "goals": [
       {
         "target": 500000,
         "title": "Mục tiêu 1: Rước Đèn Ông Sao",
-        "image": "assets/mid_autumn_1.svg"
+        "image": "assets/mid_autumn_1.jpg"
       },
       {
         "target": 1000000,
