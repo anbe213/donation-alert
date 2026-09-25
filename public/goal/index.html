@@ -48,6 +48,38 @@
         </div>
     </div>
 
+    <!-- THEME 3: MID-AUTUMN (Trung Thu - 4 Milestones) -->
+    <div id="theme-mid-autumn" style="display: none;">
+        <div id="mid-autumn-container">
+            <!-- Khung ảnh sang trọng di chuyển theo tiến trình (Khóa viền, không tràn ảnh) -->
+            <div id="mid-autumn-frame-container">
+                <div id="mid-autumn-frame">
+                    <img id="mid-autumn-photo" class="frame-photo" src="" alt="Goal Photo">
+                    <!-- Placeholder khi ảnh chưa tải được hoặc chưa cấu hình -->
+                    <div id="mid-autumn-placeholder" class="frame-placeholder">
+                        <div class="placeholder-icon">🥮</div>
+                        <div class="placeholder-text">Trung Thu</div>
+                    </div>
+                </div>
+                <!-- Con trỏ ánh kim chỉ xuống thanh bar -->
+                <div class="frame-pointer"></div>
+            </div>
+
+            <!-- Thanh tiến trình phong cách Trung Thu -->
+            <div id="mid-autumn-bar-wrapper">
+                <div id="mid-autumn-bar-bg">
+                    <!-- Thanh fill tiến trình màu vàng ánh trăng -->
+                    <div id="mid-autumn-progress-fill"></div>
+                </div>
+
+                <!-- Tiêu đề của bậc Goal hiện tại (Ẩn toàn bộ số tiền) -->
+                <div id="mid-autumn-title-overlay">
+                    <span id="mid-autumn-title-text">Loading Goal...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
 </body>

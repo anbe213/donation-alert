@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg4" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </radialGradient>
+    <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#fef08a"/>
+      <stop offset="85%" stop-color="#facc15"/>
+      <stop offset="100%" stop-color="#eab308"/>
+    </radialGradient>
+    <filter id="moonAura">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6"/>
+    </filter>
+  </defs>
+  <rect width="160" height="160" fill="url(#bg4)"/>
+  <!-- Moon Glow Aura -->
+  <circle cx="80" cy="72" r="42" fill="#facc15" opacity="0.4" filter="url(#moonAura)"/>
+  <!-- Full Moon Body -->
+  <circle cx="80" cy="72" r="36" fill="url(#moonGlow)"/>
+  <!-- Moon Craters / Rabbit silhouette hint -->
+  <ellipse cx="70" cy="62" rx="6" ry="8" fill="#ca8a04" opacity="0.2"/>
+  <ellipse cx="88" cy="68" rx="8" ry="10" fill="#ca8a04" opacity="0.25"/>
+  <ellipse cx="74" cy="82" rx="10" ry="6" fill="#ca8a04" opacity="0.2"/>
+  <!-- Mystical Clouds -->
+  <path d="M 20 105 Q 40 90 60 100 Q 80 85 105 98 Q 125 90 145 108 L 145 130 Q 110 135 80 130 Q 50 135 20 125 Z" fill="#334155" opacity="0.7"/>
+  <path d="M 35 115 Q 60 100 85 110 Q 110 98 135 118" fill="none" stroke="#94a3b8" stroke-width="2" opacity="0.5"/>
+  <!-- Stars -->
+  <circle cx="28" cy="35" r="2" fill="#fef08a"/>
+  <circle cx="132" cy="30" r="1.5" fill="#fef08a"/>
+  <circle cx="120" cy="55" r="2" fill="#fef08a"/>
+  <circle cx="40" cy="65" r="1" fill="#fef08a"/>
+</svg>

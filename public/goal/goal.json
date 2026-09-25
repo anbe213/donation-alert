@@ -1,7 +1,31 @@
 {
   "title": "Stream 2/9",
   "target": 1000000,
-  "current": 1505999,
-  "type": "bar",
-  "enemySize": 3
+  "current": 0,
+  "type": "mid-autumn",
+  "enemySize": 3,
+  "mid_autumn": {
+    "goals": [
+      {
+        "target": 500000,
+        "title": "Mục tiêu 1: Rước Đèn Ông Sao",
+        "image": "assets/mid_autumn_1.svg"
+      },
+      {
+        "target": 1000000,
+        "title": "Mục tiêu 2: Bánh Dẻo Đậu Xanh",
+        "image": "assets/mid_autumn_2.svg"
+      },
+      {
+        "target": 1500000,
+        "title": "Mục tiêu 3: Múa Lân Phá Cỗ",
+        "image": "assets/mid_autumn_3.svg"
+      },
+      {
+        "target": 2000000,
+        "title": "Mục tiêu 4: Ngắm Trăng Rằm Đoàn Viên",
+        "image": "assets/mid_autumn_4.svg"
+      }
+    ]
+  }
 }

@@ -73,6 +73,31 @@ app.get('/api/like/test', (req, res) => {
     }
 });
 
+// API Test nhanh Goal (thử nghiệm tăng hoặc đặt lại số tiền donate current)
+app.get('/api/goal/test', (req, res) => {
+    try {
+        const fs = require('fs');
+        const goalPath = path.join(__dirname, 'public/goal/goal.json');
+        if (fs.existsSync(goalPath)) {
+            let goalData = JSON.parse(fs.readFileSync(goalPath, 'utf8'));
+            if (req.query.reset !== undefined) {
+                goalData.current = parseInt(req.query.reset, 10) || 0;
+            } else if (req.query.set !== undefined) {
+                goalData.current = parseInt(req.query.set, 10) || 0;
+            } else {
+                const add = parseInt(req.query.amount || req.query.delta, 10) || 50000;
+                goalData.current = (goalData.current || 0) + add;
+            }
+            fs.writeFileSync(goalPath, JSON.stringify(goalData, null, 2), 'utf8');
+            io.emit('update_goal', goalData);
+            return res.send(`Đã cập nhật Goal current: ${goalData.current.toLocaleString('vi-VN')}đ`);
+        }
+        res.status(404).send('Không tìm thấy file goal.json');
+    } catch (err) {
+        res.status(500).send('Lỗi: ' + err.message);
+    }
+});
+
 // Socket.io kết nối
 io.on('connection', (socket) => {
     console.log('[Socket] Một client OBS (Frontend) vừa kết nối.');
