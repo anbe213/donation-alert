@@ -62,6 +62,16 @@ const updateBarUI = (current, target, percentage, title, enemySize) => {
         charImg.style.display = 'block';
         charImg.style.left = `${percentage}%`;
     }
+
+    // Hiệu ứng ánh vàng ăn mừng khi thanh bar đạt 100%
+    const barContainer = document.getElementById('goal-bar-container');
+    if (barContainer) {
+        if (percentage >= 100) {
+            barContainer.classList.add('bar-completed');
+        } else {
+            barContainer.classList.remove('bar-completed');
+        }
+    }
 };
 
 // Helper trích xuất 4 goals từ config mid_autumn

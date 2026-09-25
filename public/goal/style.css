@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Palatino:ital,wght@0,400;0,700;1,400&family=Roboto:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Playfair+Display:wght@700&family=Palatino:ital,wght@0,400;0,700;1,400&family=Roboto:wght@700&display=swap');
 
 body {
     margin: 0;
@@ -124,9 +124,9 @@ body {
    THEME 2: BAR (THANH NGANG)
    ========================================= */
 #theme-bar {
-    font-family: 'Roboto', 'Arial', sans-serif;
+    font-family: 'Cinzel', 'Playfair Display', 'Palatino', serif;
     position: absolute;
-    bottom: 0;
+    bottom: 15px;
     left: 0;
     width: 100%;
     box-sizing: border-box;
@@ -138,10 +138,14 @@ body {
     width: 100%; /* Sửa từ 100vw thành 100% để nằm gọn trong padding của theme-bar */
     height: 40px; 
     box-sizing: border-box;
-    border: 1px solid #333;
+    border: 2px solid #b45309;
+    border-top: 1.5px solid #d97706;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.75);
+    transition: box-shadow 0.3s ease;
 }
 
-/* CSS cho nhân vật */
+/* CSS cho nhân vật chạy trên thanh */
 #bar-character {
     position: absolute;
     bottom: 100%; /* Đặt ngay phía trên mép của thanh bar */
@@ -149,31 +153,38 @@ body {
     transform: translateX(-50%); /* Căn giữa ảnh vào đầu thanh process */
     height: 60px; /* Chiều cao mặc định của ảnh nhân vật */
     z-index: 10;
-    transition: left 1s ease-out; /* Mượt mà di chuyển cùng thanh fill */
+    transition: left 1s cubic-bezier(0.4, 0, 0.2, 1); /* Mượt mà di chuyển cùng thanh fill */
     pointer-events: none;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
 }
 
+/* Nền thanh bar (Bầu trời đêm trăng rằm) */
 #progress-bar-bg {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #e0e0e0;
+    background: linear-gradient(180deg, #181124 0%, #0d0814 100%);
+    border-radius: 8px;
+    overflow: hidden;
     z-index: 1;
 }
 
+/* Màu thanh trượt tiến trình (Ánh trăng vàng ấm áp) */
 #progress-fill {
     position: absolute;
     top: 0;
     left: 0;
     height: 100%;
     width: 0%;
-    background-color: #76ff03;
-    transition: width 1s ease-out;
+    background: linear-gradient(90deg, #9a3412 0%, #d97706 40%, #f59e0b 75%, #fef08a 100%);
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.7);
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 2;
 }
 
+/* Phần chữ đè lên trên thanh progress */
 #text-overlay {
     position: absolute;
     top: 0;
@@ -183,16 +194,18 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 15px;
+    padding: 0 18px;
     box-sizing: border-box;
-    z-index: 3;
+    z-index: 5;
     pointer-events: none;
 }
 
 #text-overlay div {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
-    color: #000;
+    color: #ffffff;
+    text-shadow: 1px 1px 3px #000, 0 0 8px rgba(0, 0, 0, 0.95), 0 0 12px rgba(180, 83, 9, 0.8);
+    letter-spacing: 1px;
     flex: 1;
 }
 
@@ -209,6 +222,21 @@ body {
 
 .text-right {
     text-align: right;
+}
+
+/* Hiệu ứng khi thanh bar đạt 100% */
+.bar-completed {
+    box-shadow: 0 0 20px #f59e0b, 0 4px 15px rgba(0, 0, 0, 0.9) !important;
+    animation: barGlow 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes barGlow {
+    0% {
+        box-shadow: 0 0 10px rgba(245, 158, 11, 0.5), 0 4px 15px rgba(0, 0, 0, 0.85);
+    }
+    100% {
+        box-shadow: 0 0 25px rgba(254, 240, 138, 0.95), 0 0 40px rgba(245, 158, 11, 0.7), 0 4px 15px rgba(0, 0, 0, 0.85);
+    }
 }
 
 /* =========================================
